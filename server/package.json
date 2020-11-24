@@ -1,0 +1,24 @@
+{
+  "name": "se3316-mholde6-lab3",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/iamhold3n/se3316-mholde6-lab3.git"
+  },
+  "author": "Matt Holden",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/iamhold3n/se3316-mholde6-lab3/issues"
+  },
+  "homepage": "https://github.com/iamhold3n/se3316-mholde6-lab3#readme",
+  "dependencies": {
+    "express": "^4.17.1",
+    "express-validator": "^6.6.1",
+    "lowdb": "^1.0.0"
+  }
+}

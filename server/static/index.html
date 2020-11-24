@@ -1,0 +1,71 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <meta charset="utf-8">
+        <title>Scuffed Draft My Schedule</title>
+        <link rel="stylesheet" href="style.css">
+    </head>
+    <body>
+        <div id="schedule">
+            <img src="/img/schedule.png">
+            <div id="mode">
+                <span onclick="searchMode()" id="buildSel">BUILD DRAFT</span>
+                <span onclick="savedMode()" id="savedSel">ACCESS SAVED DRAFTS</span>
+            </div>
+            <div id="search">
+                <div id="searchSubject">
+                    <span class="searchtext">Subject: </span>
+                    <select id="selectSubject">
+                        <option value="">Select a subject</option>
+                    </select>
+                </div><br><br><br>
+                <div id="searchCourse">
+                    <span class="searchtext">Course Number: </span>
+                    <select id="selectCourse">
+                        <option value="">Select course from description</option>
+                    </select>
+                </div>
+                <div id="selectComponent">
+                    <span class="searchtext">Component: </span>
+                    <label class="checkcontainer">LEC
+                        <input id="checkLEC" value="LEC" type="checkbox" checked="checked">
+                        <span class="checkmark"></span>
+                    </label>
+                    <label class="checkcontainer">TUT
+                        <input id="checkTUT" value="TUT" type="checkbox" checked="checked">
+                        <span class="checkmark"></span>
+                    </label>
+                    <label class="checkcontainer">LAB
+                        <input id="checkLAB" value="LAB" type="checkbox" checked="checked">
+                        <span class="checkmark"></span>
+                    </label>
+                </div>
+                <div id="searchButton"><button onclick="getSearchTimetable()" class="button">SEARCH</button></div>
+                <div id="builder">
+                    <hr>
+                    <input id="saveName" placeholder="Enter name for schedule" maxlength="20"><span onclick="saveSchedule()" class="savedButtons">SAVE</span>
+                    <ul id="builderData">
+                        <li>Added Courses</li>
+                    </ul>
+                    <hr>
+                </div>
+                <ul id="timetable">
+                    <li id="searchresults">SEARCH RESULTS<hr></li>
+    
+                </ul>
+            </div>
+            <div id="saved">
+                <span onclick="getAllSchedules()" class="savedButtons">RETURN ALL</span>
+                <span onclick="deleteAllSchedules()" class="savedButtons">DELETE ALL</span>
+                <input id="schedInput" maxlength="20" placeholder="Schedule name">
+                <span onclick="getSpecificSchedule()" class="savedButtons">SEARCH</span>
+                <span onclick="deleteSpecificSchedule()" class="savedButtons">DELETE</span>
+                <ul id="savedschedules">
+                    <li id=""><hr></li>
+                </ul>
+            </div>
+        </div>
+
+        <script defer src="script.js"></script>
+    </body>
+</html>

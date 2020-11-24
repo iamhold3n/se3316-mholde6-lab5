@@ -1,0 +1,307 @@
+/* CSS from lab 3 */
+
+@import url('https://fonts.googleapis.com/css2?family=Roboto:wght@400;900&display=swap');
+body {
+    font-family: 'Roboto', sans-serif;
+    background-color: white;
+}
+#schedule {
+    margin: auto;
+    width: 1250px;
+}
+#mode {
+    margin-top: 25px;
+    margin-bottom: 25px;
+    font-weight: 900;
+    font-size: 25px;
+}
+#buildSel, #savedSel {
+    padding: 5px;
+    border: 5px solid transparent;
+    border-top-left-radius: 5px;
+    border-top-right-radius: 5px;
+}
+.selected {
+    background-color: #634396;
+    color: white;
+}
+#search {
+    font-size: 20px;
+}
+select {
+    background-color: rgb(170, 170, 170);
+    font-size: 20px;
+    color: white;
+    padding: 5px;
+    border: 5px solid transparent;
+    border-radius: 5px;
+    -moz-appearance: none;
+    -webkit-appearance: none;
+    appearance: none;
+}
+#selectSubject {
+    width: 700px;
+    float: left;
+}
+#selectCourse {
+    margin-bottom: 20px;
+    width: 625px;
+    float: left;
+}
+#searchSubject {
+    width: 1200px;
+    clear: left;
+}
+#searchCourse {
+    width: 1200px;
+    clear: left;
+}
+#selectComponent {
+    display: none;
+    width: 1200px;
+    clear: left;
+}
+#searchButton {
+    clear: left;
+}
+.searchtext {
+    margin: 5px;
+    float: left;
+    padding: 5px;
+}
+#searchresults {
+    padding-top: 20px;
+    font-weight: 900;
+    font-size: 20px;
+    color: #634396;
+}
+hr {
+    height: 2px;
+    background-color: #634396;
+    border-width: 0px;
+    margin-top: 10px;
+}
+ul {
+    margin: auto;
+    width: 1225px;
+    background-color: white;
+    padding: 0;
+}
+ul li {
+    list-style-type: none;
+    margin: auto;
+    width: 1225px;
+    padding-bottom: 20px;
+}
+.subject {
+    color: white;
+    font-weight: 900;
+    font-size: 20px;
+    background-color: #634396;
+    border: 1px solid none;
+    border-top-left-radius: 5px;
+    border-bottom-left-radius: 5px;
+    padding: 10px;
+}
+.course {
+    color: white;
+    font-weight: 900;
+    font-size: 20px;
+    background-color: #00b5af;
+    border: 1px solid none;
+    border-top-right-radius: 5px;
+    border-bottom-right-radius: 5px;
+    padding: 10px;
+}
+.description {
+    color: black;
+    font-weight: 900;
+    font-size: 20px;
+    background-color: white;
+    border: 1px solid none;
+    border-top-right-radius: 5px;
+    border-bottom-right-radius: 5px;
+    padding: 10px;
+}
+.ext_description {
+    background-color: white;
+    padding: 10px;
+    margin-top: 10px;
+    color: black;
+    font-size: 16px;
+    font-weight: normal;
+    border: 1px solid none;
+    border-bottom-left-radius: 5px;
+    border-bottom-right-radius: 5px;
+}
+.courseinfo {
+    color: white;
+    padding: 5px;
+    font-weight: 900;
+    font-size: 12px;
+}
+.courseinfotable {
+    margin: 5px;
+    width: 1190px;
+    background-color: rgb(170, 170, 170);
+    border: 1px solid rgb(170, 170, 170);
+    border-radius: 5px;
+}
+.courseinfovalue {
+    color: black;
+    background-color: white;
+    padding: 5px;
+}
+.req {
+    width: 400px;
+}
+.checkcontainer {
+    float: left;
+    display: block;
+    position: relative;
+    padding-left: 35px;
+    margin-bottom: 10px;
+    margin-top: 10px;
+    margin-right: 20px;
+    cursor: pointer;
+    font-size: 22px;
+    -webkit-user-select: none;
+    -moz-user-select: none;
+    -ms-user-select: none;
+    user-select: none;
+}
+.checkcontainer input {
+    position: absolute;
+    opacity: 0;
+    cursor: pointer;
+    height: 0;
+    width: 0;
+}
+.checkmark {
+    position: absolute;
+    top: 0;
+    left: 0;
+    height: 25px;
+    width: 25px;
+    background-color: #eee;
+}
+.checkcontainer input:checked ~ .checkmark {
+    background-color: #634396;
+}
+.checkmark:after {
+    content: "";
+    position: absolute;
+    display: none;
+}
+.checkcontainer input:checked ~ .checkmark:after {
+    display: block;
+}
+.checkcontainer .checkmark:after {
+    left: 9px;
+    top: 5px;
+    width: 5px;
+    height: 10px;
+    border: solid white;
+    border-width: 0 3px 3px 0;
+    -webkit-transform: rotate(45deg);
+    -ms-transform: rotate(45deg);
+    transform: rotate(45deg);
+}
+.button {
+    margin: 10px;
+    background-color: #634396;
+    border: 5px solid transparent;
+    border-radius: 5px;
+    color: white;
+    padding: 5px;
+    text-align: center;
+    text-decoration: none;
+    display: inline-block;
+    font-size: 20px;
+    font-weight: 600;
+}
+.add {
+    font-size: 20px;
+    font-weight: 900;
+    padding: 5px;
+    background: #634396;
+    color: white;
+    border: none;
+    border-radius: 5px;
+    text-align: center;
+}
+.comp {
+    font-weight: 900;
+    text-align: center;
+}
+.compLEC {
+    background-color: #9bc7ff;
+}
+.compTUT {
+    background-color: #ff8b8b;
+}
+.compLAB {
+    background-color: #94ff8a;
+}
+#saved {
+    padding-top: 20px;
+    padding: 10px;
+    width: 1200px;
+    margin: 10px;
+    font-size: 20px;
+}
+.savedButtons {
+    padding: 5px;
+    background-color: #00b5af;
+    color: white;
+    border: 5px solid transparent;
+    font-size: 20px;
+    font-weight: 600;
+    height: 24px;
+    line-height: 24px;
+}
+#builder {
+    padding: 10px;
+}
+#builderData {
+    padding: 10px;
+}
+#builderData li, #savedschedules li {
+    margin-top: 10px;
+    margin-bottom: 10px;
+}
+#builder input, #saved input {
+    font-size: 20px;
+    padding: 5px;
+    border: 5px solid transparent;
+    background-color: rgb(170, 170, 170);
+    color: white;
+    margin: 0px;
+    height: 24px;
+    line-height: 24px;
+}
+.left {
+    border-top-left-radius: 5px;
+    border-bottom-left-radius: 5px;
+}
+.right {
+    border-top-right-radius: 5px;
+    border-bottom-right-radius: 5px;
+    margin-right: 10px;
+}
+.delete {
+    background-color: #00b5af;
+}
+.return {
+    background: #634396;
+}
+.remove {
+    color: white;
+    font-size: 16px;
+    font-weight: 900;
+    background-color: rgb(170, 170, 170);
+    border: 5px solid transparent;
+    border-top-right-radius: 5px;
+    border-bottom-right-radius: 5px;
+    padding: 2px;
+}

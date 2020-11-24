@@ -1,0 +1,51 @@
+<div id="saved">
+    <span (click)="getAllSchedules()" class="savedButtons left return">RETURN ALL</span>
+    <span (click)="deleteAllSchedules()" class="savedButtons right delete">DELETE ALL</span>
+    <span (click)="getSpecificSchedule()" class="savedButtons left return">SEARCH</span>
+    <input id="schedInput" maxlength="20" placeholder="Schedule name">
+    <span (click)="deleteSpecificSchedule()" class="savedButtons right delete">DELETE</span>
+    <ul id="savedschedules">
+        <li><hr></li>
+        <li *ngIf="specificSchedule.name !== ''">Timetable for schedule: <b>{{specificSchedule.name}}</b></li>
+        <li *ngFor="let d of specificSchedule.courses">
+            <span class="subject">{{d[0].subject}}</span>
+            <span class="course">{{d[0].courseCode}}</span>
+            <span class="description">{{d[0].description}}</span>
+            <div class="ext_description">{{d[0].ext_description}}</div>
+            <table class="courseinfotable">
+                <tr>
+                    <td class="courseinfo">COMPONENT</td>
+                    <td class="courseinfo">SECTION</td>
+                    <td class="courseinfo">CLASS</td>
+                    <td class="courseinfo">INSTRUCTOR</td>
+                    <td class="courseinfo">REQUISITES/CONSTRAINTS</td>
+                    <td class="courseinfo">DAYS</td>
+                    <td class="courseinfo">TIMES</td>
+                    <td class="courseinfo">LOCATION</td>
+                    <td class="courseinfo">CAMPUS</td>
+                    <td class="courseinfo">STATUS</td>
+                </tr>
+                <tr *ngFor="let e of d[0].courseInfo">
+                    <!-- LEC/LAB icons from FontAwesome, TUT icon from flaticon.com/authors/pixel-perfect -->
+                    <td class="courseinfovalue comp compLEC" *ngIf="e.ssr_component==='LEC'"><img src="../../assets/img/chalkboard-teacher.svg" width="14" height="16" /> {{e.ssr_component}}</td>
+                    <td class="courseinfovalue comp compTUT" *ngIf="e.ssr_component==='TUT'"><img src="../../assets/img/presentation.svg" width="14" height="16" /> {{e.ssr_component}}</td>
+                    <td class="courseinfovalue comp compLAB" *ngIf="e.ssr_component==='LAB'"><img src="../../assets/img/flask.svg" width="14" height="16" /> {{e.ssr_component}}</td>
+                    <td class="courseinfovalue">{{e.class_section}}</td>
+                    <td class="courseinfovalue">{{e.class_nbr}}</td>
+                    <td class="courseinfovalue">{{e.instructors}}</td>
+                    <td class="courseinfovalue req">{{e.descr}} {{e.descrlong}}</td>
+                    <td class="courseinfovalue">{{e.days}}</td>
+                    <td class="courseinfovalue">{{e.start_time}} - {{e.end_time}}</td>
+                    <td class="courseinfovalue">{{e.facility_ID}}</td>
+                    <td class="courseinfovalue">{{e.campus}}</td>
+                    <td class="courseinfovalue">{{e.enrl_stat}}</td>
+                </tr>
+            </table>
+        </li>
+        <li *ngIf="allSchedules !== null">Schedule names and number of courses saved to them:</li>
+        <li *ngFor="let a of allSchedules">
+            <span class="subject" dir="ltr">{{a.name}}</span>
+            <span class="course" dir="ltr">{{a.number}}</span>
+        </li>
+    </ul>
+</div>

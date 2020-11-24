@@ -1,0 +1,85 @@
+<div id="search">
+    <div id="searchSubject">
+        <span class="searchtext">Subject: </span>
+        <select (change)="subjectSelected(); populateCourses()" id="selectSubject">
+            <option value="">Select a subject</option>
+            <option *ngFor="let s of diffSubj" value={{s}}>{{s}}</option>
+        </select>
+    </div><br><br><br>
+    <div id="searchCourse" *ngIf="subjectSelected()">
+        <span class="searchtext">Course Number: </span>
+        <select (change)="courseSelected()" id="selectCourse">
+            <option value="">Select course from description</option>
+            <option *ngFor="let c of courseListData" value={{c.courseCode}}>{{c.courseCode}} {{c.description}}</option>
+        </select>
+    </div>
+    <div id="selectComponent">
+        <span class="searchtext">Component: </span>
+        <label class="checkcontainer">LEC
+            <input id="checkLEC" value="LEC" type="checkbox" checked="checked">
+            <span class="checkmark"></span>
+        </label>
+        <label class="checkcontainer">TUT
+            <input id="checkTUT" value="TUT" type="checkbox" checked="checked">
+            <span class="checkmark"></span>
+        </label>
+        <label class="checkcontainer">LAB
+            <input id="checkLAB" value="LAB" type="checkbox" checked="checked">
+            <span class="checkmark"></span>
+        </label>
+    </div>
+    <div id="searchButton"><button (click)="getSearchTimetable()" class="button">SEARCH</button></div>
+    <div id="builder" *ngIf="added">
+        <hr>
+        <input class="left" id="saveName" placeholder="Enter name for schedule" maxlength="20"><span (click)="saveSchedule()" class="savedButtons right">SAVE</span>
+        <ul id="builderData">
+            <li>Added Courses</li>
+            <li *ngFor="let a of savedCourses.courses">
+                <span class="subject">{{a.subject}}</span>
+                <span class="course">{{a.courseCode}}</span>
+                <span class="remove" (click)="removeCourse(a.subject, a.courseCode)">X</span>
+            </li>
+        </ul>
+        <hr>
+    </div>
+    <ul id="timetable" *ngIf="searchData">
+        <li id="searchresults">SEARCH RESULTS<hr></li>
+        <li *ngFor="let d of searchData">
+            <span class="subject">{{d.subject}}</span>
+            <span class="course">{{d.courseCode}}</span>
+            <span class="description">{{d.description}}</span>
+            <div class="ext_description">{{d.ext_description}}</div>
+            <table class="courseinfotable">
+                <tr>
+                    <td class="courseinfo">COMPONENT</td>
+                    <td class="courseinfo">SECTION</td>
+                    <td class="courseinfo">CLASS</td>
+                    <td class="courseinfo">INSTRUCTOR</td>
+                    <td class="courseinfo">REQUISITES/CONSTRAINTS</td>
+                    <td class="courseinfo">DAYS</td>
+                    <td class="courseinfo">TIMES</td>
+                    <td class="courseinfo">LOCATION</td>
+                    <td class="courseinfo">CAMPUS</td>
+                    <td class="courseinfo">STATUS</td>
+                    <td class="courseinfo">ADD</td>
+                </tr>
+                <tr *ngFor="let e of d.courseInfo">
+                    <!-- LEC/LAB icons from FontAwesome, TUT icon from flaticon.com/authors/pixel-perfect -->
+                    <td class="courseinfovalue comp compLEC" *ngIf="e.ssr_component==='LEC'"><img src="../../assets/img/chalkboard-teacher.svg" width="14" height="16" /> {{e.ssr_component}}</td>
+                    <td class="courseinfovalue comp compTUT" *ngIf="e.ssr_component==='TUT'"><img src="../../assets/img/presentation.svg" width="14" height="16" /> {{e.ssr_component}}</td>
+                    <td class="courseinfovalue comp compLAB" *ngIf="e.ssr_component==='LAB'"><img src="../../assets/img/flask.svg" width="14" height="16" /> {{e.ssr_component}}</td>
+                    <td class="courseinfovalue">{{e.class_section}}</td>
+                    <td class="courseinfovalue">{{e.class_nbr}}</td>
+                    <td class="courseinfovalue">{{e.instructors}}</td>
+                    <td class="courseinfovalue req">{{e.descr}} {{e.descrlong}}</td>
+                    <td class="courseinfovalue">{{e.days}}</td>
+                    <td class="courseinfovalue">{{e.start_time}} - {{e.end_time}}</td>
+                    <td class="courseinfovalue">{{e.facility_ID}}</td>
+                    <td class="courseinfovalue">{{e.campus}}</td>
+                    <td class="courseinfovalue">{{e.enrl_stat}}</td>
+                    <td class="courseinfovalue add" (click)="addCourse(d.subject, d.courseCode); added=true" ng-model="added">+</td>
+                </tr>
+            </table>
+        </li>
+    </ul>
+</div>
