@@ -10,7 +10,14 @@ const FileSync = require('lowdb/adapters/FileSync');
 const adapter = new FileSync('./data/db.json');
 const db = low(adapter);
 
-db.defaults({ schedules: [] }).write();
+db.defaults({ schedules: [], users: [] }).write();
+
+// firebase SDK authentication
+const admin = require('firebase-admin');
+admin.initializeApp({
+    credential: admin.credential.applicationDefault(),
+    databaseURL: 'https://se3316-mholde6-lab5.firebaseio.com'
+});
 
 app.use('/', express.static('static'));
 
@@ -21,6 +28,7 @@ router.use((req, res, next) => {
 
 router.use(express.json());
 
+// === LEGACY ROUTES ===
 // Get all available subject codes and descriptions
 router.get('/catalog', (req, res) => {
     let data = [];
@@ -162,6 +170,144 @@ router.delete('/schedules/specific', [
 router.delete('/schedules', (req, res) => {
     db.get('schedules').remove().write();
     res.status(200).send({ "success" : "All schedules deleted." })
+});
+
+// === ** LAB 5 NEW ** ===
+function checkAuth(req, authStatus, adminStatus, decoded) {
+    authHeader = req.header('Authorization');
+
+    if (authHeader) {
+        const bearer = authHeader.split(' ');
+        const token = bearer[1];
+
+        admin.auth().verifyIdToken(token)
+        .then((decodedToken) => {
+            authStatus = true;
+            decoded = decodedToken;
+            // check database if user is admin
+        }).catch((error) => {
+            authStatus = false;
+            adminStatus = false;
+        })
+    }
+};
+
+// === GUEST ROUTES ===
+// search catalog 
+router.get('/catalog', (req, res) => {
+    // rewrite existing search routes to allow for soft-matching
+})
+
+// get all public schedules
+router.get('/schedule', (req, res) => {
+    // rewrite existing schedule search route
+})
+
+// get specific public schedule timetable
+router.get('/schedule/:specific', (req, res) => {
+    // rewrite existing specific schedule search route
+})
+
+// === USER ROUTES ===
+// get list of created schedules for user
+router.get('/auth/schedule/:user', (req, res) => {
+    let authStatus, adminStatus, decoded;
+    checkAuth(req, authStatus, adminStatus, decoded);
+    if (authStatus) {
+        // get all schedules in database for specific user
+    }
+    else res.status(403).send({ error : "Not authorized." });
+});
+
+// get specific schedule for user
+router.get('/auth/schedule/:user/:specific', (req, res) => {
+    let authStatus, adminStatus, decoded;
+    checkAuth(req, authStatus, adminStatus, decoded);
+    if (authStatus) {
+        // get specific schedule in database for specific user
+    }
+    else res.status(403).send({ error : "Not authorized." });
+});
+
+// create new schedule for user
+router.put('/auth/schedule', (req, res) => {
+    let authStatus, adminStatus, decoded;
+    checkAuth(req, authStatus, adminStatus, decoded);
+    if (authStatus) {
+        // create schedule in database for user
+    }
+    else res.status(403).send({ error : "Not authorized." });
+});
+
+// update existing schedule for user
+router.post('/auth/schedule', (req, res) => {
+    let authStatus, adminStatus, decoded;
+    checkAuth(req, authStatus, adminStatus, decoded);
+    if (authStatus) {
+        // update schedule in database for user
+    }
+    else res.status(403).send({ error : "Not authorized." });
+})
+
+// delete existing schedule for user
+router.delete('/auth/schedule', (req, res) => {
+    let authStatus, adminStatus, decoded;
+    checkAuth(req, authStatus, adminStatus, decoded);
+    if (authStatus) {
+        // delete schedule in database for user
+    }
+    else res.status(403).send({ error : "Not authorized." });
+});
+
+// add a comment to a course from a user
+router.put('/auth/review', (req, res) => {
+    let authStatus, adminStatus, decoded;
+    checkAuth(req, authStatus, adminStatus, decoded);
+    if (authStatus) {
+        // create review of course from user in database
+    }
+    else res.status(403).send({ error : "Not authorized." });
+});
+
+// === ADMIN ROUTES ===
+// get list of users
+router.get('/admin/user', (req, res) => {
+    let authStatus, adminStatus, decoded;
+    checkAuth(req, authStatus, adminStatus, decoded);
+    if (authStatus && adminStatus) {
+        // grab users from database
+    }
+    else res.status(403).send({ error : "Not authorized." });
+});
+
+// change permissions or status of user
+router.post('/admin/user', (req, res) => {
+    let authStatus, adminStatus, decoded;
+    checkAuth(req, authStatus, adminStatus, decoded);
+    if (authStatus && adminStatus) {
+        // change user account in database
+    }
+    else res.status(403).send({ error : "Not authorized." });
+});
+
+// get list of reviews
+router.get('/admin/review', (req, res) => {
+    let authStatus, adminStatus, decoded;
+    checkAuth(req, authStatus, adminStatus, decoded);
+    if (authStatus && adminStatus) {
+        // get list of reviews from database
+    }
+    else res.status(403).send({ error : "Not authorized." });
+});
+
+// change reviews
+router.post('/admin/review', (req, res) => {
+    let authStatus, adminStatus, decoded;
+    checkAuth(req, authStatus, adminStatus, decoded);
+    if (authStatus && adminStatus) {
+        // hide or show review from database
+    }
+    else res.status(403).send({ error : "Not authorized." });
 });
 
 app.use('/api', router); // Set the routes at '/api'

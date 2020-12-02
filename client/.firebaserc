@@ -1,0 +1,11 @@
+{
+  "targets": {
+    "se3316-mholde6-lab5": {
+      "hosting": {
+        "se3316-mholde6-lab4": [
+          "se3316-mholde6-lab5"
+        ]
+      }
+    }
+  }
+}
