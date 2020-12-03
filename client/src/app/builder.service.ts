@@ -20,20 +20,23 @@ export class BuilderService {
     return this.http.get(`${this.url}/catalog/${subj}`);
   }
 
+  getSearchTimetableCombo(s, c, suf) {
+    if(s !== "") {
+      if(c !== "") {
+        if(suf !== "") return this.http.get(`${this.url}/combo/${s}/${c}/${suf}`)
+        else return this.http.get(`${this.url}/combo/${s}/${c}`);
+      }
+    }
+  }
+
   // get time table for subject s, course c, component o
   getSearchTimetable(s, c, o) {
     if(s !== "") {
       if(c !== "") {
-        if(o !== "") {
-          return this.http.get(`${this.url}/catalog/${s}/${c}/${o}`);
-        }
-        else {
-          return this.http.get(`${this.url}/catalog/${s}/${c}`);
-        }
+        if(o !== "") return this.http.get(`${this.url}/catalog/${s}/${c}/${o}`);
+        else return this.http.get(`${this.url}/catalog/${s}/${c}`);
       }
-      else {
-        return this.http.get(`${this.url}/catalog/${s}`);
-      }
+      else return this.http.get(`${this.url}/catalog/${s}`);
     }
   }
 

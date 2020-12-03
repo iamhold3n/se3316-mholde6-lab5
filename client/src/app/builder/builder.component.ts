@@ -48,42 +48,6 @@ export class BuilderComponent implements OnInit {
     return (s !== "");
   }
 
-  // populate course list of selected subject
-  populateCourses(): void {
-    const s = (<HTMLInputElement>document.getElementById('selectSubject')).value;
-
-    // hide component area if user selected new subject
-    const o = document.getElementById('selectComponent');
-    o.style.display = "none";
-
-    if (s !== "") {
-      var courseList = [];
-      this.courseListData = [];
-      this.subjectsAndDesc.forEach(e => { if (e.subject === s) courseList.push(e); })
-      this.builder.populateCourses(s).subscribe(
-        (response) => {
-          for(let i = 0; i < courseList.length; i++) {
-            this.courseListData.push({courseCode: response[i].courseCode, description: courseList[i].description})
-          }
-        })
-    }
-  }
-
-  // check if course was selected in drop-down menu, toggle component area
-  courseSelected(): boolean {
-    const c = (<HTMLInputElement>document.getElementById('selectCourse')).value;
-    const o = document.getElementById('selectComponent');
-
-    if(c !== "") {
-      o.style.display = "block";
-      return true;
-    }
-    else {
-      o.style.display = "none";
-      return false;
-    }
-  }
-
   // get search input from user to query server
   getSearchTimetable(): void {
     const s = (<HTMLInputElement>document.getElementById('selectSubject')).value;
@@ -92,23 +56,21 @@ export class BuilderComponent implements OnInit {
       return;
     }
 
-    const c = (<HTMLInputElement>document.getElementById('selectCourse')).value;
-    const oLEC = (<HTMLInputElement>document.getElementById('checkLEC'));
-    const oTUT = (<HTMLInputElement>document.getElementById('checkTUT'));
-    const oLAB = (<HTMLInputElement>document.getElementById('checkLAB'));
-    let o = "";
+    const c = (<HTMLInputElement>document.getElementById('courseNumber')).value;
+    if (c === "") {
+      alert("Please enter a course code.");
+      return;
+    }
 
-    if (oLEC.checked) o += "LEC/";
-    if (oTUT.checked) o += "TUT/";
-    if (oLAB.checked) o += "LAB/";
-    if (o === "LEC/TUT/LAB/") o = "";
-    if (!oLEC.checked && !oTUT.checked && !oLAB.checked) {
-      alert("Please select at least one component.");
+    const suf = (<HTMLInputElement>document.getElementById('courseSuffix')).value;
+
+    if (this.badchar.test(suf) || this.badchar.test(c)) {
+      alert("Disallowed characters are detected, please try again with a valid course code/suffix.");
       return;
     }
 
     // get time table for course(s)
-    this.builder.getSearchTimetable(s, c, o).subscribe(
+    this.builder.getSearchTimetableCombo(s, c, suf).subscribe(
       (response) => {
         this.searchData = response;
       },
