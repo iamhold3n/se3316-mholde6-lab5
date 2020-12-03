@@ -1,6 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { BuilderService } from '../builder.service';
 import { SavedService } from '../saved.service';
+import { AuthService } from '../auth.service';
 
 @Component({
   selector: 'app-builder',
@@ -16,7 +17,7 @@ export class BuilderComponent implements OnInit {
   badchar = /[ `!@#$%^&*()_+\-=\[\]{};':"\\|,.<>\/?~]/;
   added;
 
-  constructor(private builder: BuilderService, private saved: SavedService) { }
+  constructor(private builder: BuilderService, private saved: SavedService, private auth: AuthService) { }
 
   ngOnInit(): void {
     const buildSel = document.getElementById('buildSel');
