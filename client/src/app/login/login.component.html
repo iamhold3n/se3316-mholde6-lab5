@@ -1,0 +1,14 @@
+<form [formGroup]="loginForm">
+    <div>
+        <label>Email</label>
+        <input type="email" formControlName="email" required>
+    </div>
+    <div>
+        <label>Password</label>
+        <input type="password" formControlName="password" required>
+    </div>
+    <button (click)="loginEmail(loginForm.value)">LOGIN</button>
+</form>
+
+<button (click)="loginGoogle()">GOOGLE</button>
+<button routerLink="/register">REGISTER</button>
