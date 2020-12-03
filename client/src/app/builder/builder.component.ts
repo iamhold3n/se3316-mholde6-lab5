@@ -81,6 +81,30 @@ export class BuilderComponent implements OnInit {
     )
   }
 
+  getSearchKeyword(): void {
+    const k = (<HTMLInputElement>document.getElementById('keyword')).value;
+    if (k === "") {
+      alert("Please select a subject.");
+      return;
+    } else {
+      if (this.badchar.test(k)) {
+        alert("Disallowed characters are detected, please try again with a valid course code/suffix.");
+        return;
+      } else {
+        this.builder.getSearchKeyword(k).subscribe(
+          (response) => {
+            this.searchData = response;
+          },
+          (error) => {
+            this.searchData = "";
+            alert("Keyword found no matches.");
+          }
+        )
+      }
+    }
+
+  }
+
   // add course to builder
   addCourse(subj, cour) {
     let courseExists = 0;

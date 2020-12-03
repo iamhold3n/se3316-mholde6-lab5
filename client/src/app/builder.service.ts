@@ -29,6 +29,12 @@ export class BuilderService {
     }
   }
 
+  getSearchKeyword(k) {
+    if(k !== "") {
+      return this.http.get(`${this.url}/soft/${k}`);
+    }
+  }
+
   // get time table for subject s, course c, component o
   getSearchTimetable(s, c, o) {
     if(s !== "") {

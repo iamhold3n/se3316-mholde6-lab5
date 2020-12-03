@@ -76,7 +76,7 @@ select {
     width: 1200px;
     clear: left;
 }
-#searchButton {
+.searchButton {
     clear: left;
 }
 .searchtext {

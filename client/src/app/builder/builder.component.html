@@ -10,8 +10,14 @@
         <span class="searchtext">Course Number: </span>
         <input id="courseNumber" class="left" placeholder="Enter course number" maxlength="4"><input id="courseSuffix" class="right" placeholder="Enter course suffix" maxlength="1">
     </div>
-    
-    <div id="searchButton"><button (click)="getSearchTimetable()" class="button">SEARCH</button></div>
+
+    <div class="searchButton"><button (click)="getSearchTimetable()" class="button">SEARCH</button></div>
+    <hr>
+    <div id="searchKeyword">
+        <span class="searchtext">Keyword: </span>
+        <input id="keyword" placeholder="Enter keyword to search" maxlength="20">
+    </div>
+    <div class="searchButton"><button (click)="getSearchKeyword()" class="button">SEARCH</button></div>
     <div id="builder" *ngIf="added">
         <hr>
         <input class="left" id="saveName" placeholder="Enter name for schedule" maxlength="20"><span (click)="saveSchedule()" class="savedButtons right">SAVE</span>

@@ -19,6 +19,8 @@ admin.initializeApp({
     databaseURL: 'https://se3316-mholde6-lab5.firebaseio.com'
 });
 
+var stringSimilarity = require('string-similarity');
+
 app.use('/', express.static('static'));
 
 router.use((req, res, next) => {
@@ -196,7 +198,7 @@ function checkAuth(req, authStatus, adminStatus, decoded) {
 // search catalog by subject/course/suffix
 router.get('/combo/:subject/:course/:suffix?', (req, res) => {
     let data = [];
-    
+
     for (c in catalog) {
         if (catalog[c].subject === req.params.subject) {
             if (req.params.suffix) {
@@ -215,7 +217,15 @@ router.get('/combo/:subject/:course/:suffix?', (req, res) => {
 
 // search catalog for soft keywords
 router.get('/soft/:key', (req, res) => {
-    // rewrite existing search routes to allow for soft-matching
+    let data = [];
+
+    for (c in catalog) {
+        if ((stringSimilarity.compareTwoStrings(catalog[c].catalog_nbr.toString(), req.params.key.toString()) > 0.6) || (stringSimilarity.compareTwoStrings(catalog[c].className, req.params.key.toString().toUpperCase()) > 0.4))
+            data.push({subject:catalog[c].subject, courseCode:catalog[c].catalog_nbr, description:catalog[c].className, courseInfo:catalog[c].course_info, ext_description:catalog[c].catalog_description});
+    }
+
+    if (data.length !== 0) res.status(200).send(data);
+    else res.status(404).send({ "error" : "No courses match keyword." });
 })
 
 // get all public schedules
