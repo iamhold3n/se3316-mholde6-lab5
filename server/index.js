@@ -10,7 +10,7 @@ const FileSync = require('lowdb/adapters/FileSync');
 const adapter = new FileSync('./data/db.json');
 const db = low(adapter);
 
-db.defaults({ schedules: [], users: [] }).write();
+db.defaults({ schedules: [], users: [], reviews: [] }).write();
 
 // firebase SDK authentication
 const admin = require('firebase-admin');
@@ -269,6 +269,26 @@ router.get('/auth/schedule/user/:specific', (req, res) => {
     } else res.status(403).send({ error : "Not authorized." });
 });
 
+// enforce unique schedule naming when editing
+router.get('/auth/schedule/user/unique/:specific', (req, res) => {
+    authHeader = req.header('Authorization');
+
+    if (authHeader) {
+        const bearer = authHeader.split(' ');
+        const token = bearer[1];
+
+        admin.auth().verifyIdToken(token)
+        .then((decodedToken) => {
+            let data = db.get('schedules').find({ name: req.params.specific }).value();
+            if (data === undefined) res.status(200).send({'new':'Schedule can be created.'});
+            else {
+                if (data.user === decodedToken.uid) res.status(200).send({'update':'Schedule can be updated.'});
+                else res.status(403).send({ error: 'Schedule name exists, created by other user.'});
+            }
+        })
+    } else res.status(403).send({ error : "Not authorized." });
+})
+
 // create new schedule for user
 router.put('/auth/schedule', [
     body('name').isLength({ min: 3, max: 20 }).trim().escape(),
@@ -337,13 +357,26 @@ router.post('/auth/schedule', [
 })
 
 // delete existing schedule for user
-router.delete('/auth/schedule', (req, res) => {
-    let authStatus, adminStatus, decoded;
-    checkAuth(req, authStatus, adminStatus, decoded);
-    if (authStatus) {
-        // delete schedule in database for user
-    }
-    else res.status(403).send({ error : "Not authorized." });
+router.delete('/auth/schedule/user/:specific', (req, res) => {
+    authHeader = req.header('Authorization');
+
+    if (authHeader) {
+        const bearer = authHeader.split(' ');
+        const token = bearer[1];
+
+        admin.auth().verifyIdToken(token)
+        .then((decodedToken) => { 
+            if (!db.get('schedules').find( { name: req.params.specific }).value()) res.status(404).send({ error : "Cannot delete, schedule does not exist." })
+            else {
+                if (db.get('schedules').find({ name: req.params.specific, user: decodedToken.uid }).value()) {
+                    db.get('schedules').remove({ name: req.params.specific }).write();
+                    res.status(200).send({ "success" : "Schedule deleted." });
+                } else res.status(403).send({ error : "Not authorized." });
+            }
+        }).catch((error) => {
+            res.status(403).send({ error : "Not authorized." });
+        })
+    } else res.status(403).send({ error : "Not authorized." });
 });
 
 // add a comment to a course from a user

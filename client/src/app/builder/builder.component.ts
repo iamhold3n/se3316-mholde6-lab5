@@ -19,6 +19,7 @@ export class BuilderComponent implements OnInit {
   goodnum = /^[0-9]+$/;
   goodsuf = /^[a-bA-B]+$/;
   added;
+  unique;
 
   constructor(private builder: BuilderService, private saved: SavedService, private auth: AuthService) { }
 
@@ -151,13 +152,16 @@ export class BuilderComponent implements OnInit {
         this.savedCourses.private = (<HTMLInputElement>document.getElementById('checkPrivate')).checked;
         this.savedCourses.description = (<HTMLInputElement>document.getElementById('saveDesc')).value;
 
-        this.saved.getSpecificSchedule(name).subscribe(
-          (response) => { // schedule name does exist, update it
-            if (confirm("Schedule name already exists, overwrite?")) this.updateSchedule();
-            else alert("Schedule not saved.");
+        this.saved.checkUnique(name, this.auth.token).subscribe(
+          (response) => { 
+            this.unique = response;
+            if (this.unique.update) { // schedule name does exist, update it
+              if (confirm("Schedule name already exists, overwrite?")) this.updateSchedule();
+              else alert("Schedule not saved.");
+            } else this.createSchedule(); // schedule name doesn't exist, create it
           },
-          (error) => { // schedule name doesn't exist, create it
-            this.createSchedule();
+          (error) => { 
+            alert("Schedule name exists, created by another user.");
           }
         )
       }

@@ -29,6 +29,16 @@ export class SavedService {
     return this.http.get(`${this.url}/auth/schedule/user/${sch}`, headers)
   }
 
+  checkUnique(sch, token) {
+    const headers = { headers: new HttpHeaders({'Authorization': 'Bearer ' + token})};
+    return this.http.get(`${this.url}/auth/schedule/user/unique/${sch}`, headers)
+  }
+
+  deleteUserSpecific(sch, token) {
+    const headers = { headers: new HttpHeaders({'Authorization': 'Bearer ' + token})};
+    return this.http.delete(`${this.url}/auth/schedule/user/${sch}`, headers);
+  }
+
   // delete specific schedule sch
   deleteSpecificSchedule(sch) {
     return this.http.delete(`${this.url}/schedules/specific`, sch);

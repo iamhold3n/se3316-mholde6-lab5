@@ -18,6 +18,8 @@ export class SavedComponent implements OnInit {
   show = [];
   userSchedules = null;
   editSchedule = null;
+  delSchedule = "";
+  unique;
 
   constructor(private saved: SavedService, private builder: BuilderService, private auth: AuthService) { }
 
@@ -28,9 +30,11 @@ export class SavedComponent implements OnInit {
     savedSel.className = "selected";
   }
 
+  // reset UI elements
   resetUI(): void {
     this.specificSchedule.name = "";
     this.specificSchedule.courses = [];
+    this.delSchedule = "";
     this.editSchedule = null;
     this.allSchedules = null;
     this.userSchedules = null;
@@ -51,6 +55,7 @@ export class SavedComponent implements OnInit {
     )
   }
 
+  // get list of all user specific schedules
   getUserSchedules(): void {
     this.resetUI();
 
@@ -65,6 +70,7 @@ export class SavedComponent implements OnInit {
     }
   }
 
+  // edit specific user schedule
   editUserSchedule(sch): void {
     this.resetUI();
 
@@ -72,6 +78,7 @@ export class SavedComponent implements OnInit {
       this.saved.getUserSpecific(sch, this.auth.token).subscribe(
         (response) => {
           this.editSchedule = response[0];
+          this.delSchedule = this.editSchedule.name;
         }
       );
     } else {
@@ -79,6 +86,7 @@ export class SavedComponent implements OnInit {
     }
   }
 
+  // save user schedule after modifying
   saveSchedule(): void {
     const name = (<HTMLInputElement>document.getElementById('saveName')).value;
     const desc = (<HTMLInputElement>document.getElementById('saveDesc')).value;
@@ -88,7 +96,6 @@ export class SavedComponent implements OnInit {
         alert("Disallowed characters are detected, please try again with a new schedule name/description.");
       }
       else {
-        this.editSchedule.name = name;
         this.editSchedule.user = this.auth.uuid;
         this.editSchedule.displayName = this.auth.displayName;
         console.log(this.editSchedule.displayName);
@@ -96,20 +103,71 @@ export class SavedComponent implements OnInit {
         this.editSchedule.private = (<HTMLInputElement>document.getElementById('checkPrivate')).checked;
         this.editSchedule.description = (<HTMLInputElement>document.getElementById('saveDesc')).value;
 
-        this.builder.updateSchedule(this.editSchedule, this.auth.token).subscribe(
-          (response) => {
-            alert("Schedule updated.");
-          }
-        )
+        if (this.editSchedule.name === name) this.updateSchedule();
+        else {
+          //this.delSchedule.name = this.editSchedule.name;
+          //console.log(this.delSchedule);
+          this.editSchedule.name = name;
+          this.updateScheduleName();
+        }
       }
     }
   }
 
+  // update schedule with new attributes
+  updateSchedule(): void {
+    this.builder.updateSchedule(this.editSchedule, this.auth.token).subscribe(
+      (response) => {
+        alert("Schedule updated.");
+      }
+    )
+  }
+
+  // schedule name changed, check to make sure it's unique and update
+  updateScheduleName(): void {
+    this.saved.checkUnique(this.editSchedule.name, this.auth.token).subscribe(
+      (response) => {
+        this.unique = response;
+        if (this.unique.new) {
+          this.builder.createSchedule(this.editSchedule, this.auth.token).subscribe(
+            (response) => {
+              alert('Schedule successfully renamed.');
+              this.saved.deleteUserSpecific(this.delSchedule, this.auth.token).subscribe((response) => console.log('Old schedule successfully deleted.'));
+            }
+          )
+        } else {
+          if (confirm("Schedule name already exists, overwrite?")) {
+            this.builder.updateSchedule(this.editSchedule, this.auth.token).subscribe(
+              (response) => {
+                alert('Schedule successfully renamed, and overwrote other schedule.');
+                this.saved.deleteUserSpecific(this.delSchedule, this.auth.token).subscribe((response) => console.log('Old schedule successfully deleted.'));
+              }
+            )
+          } else alert("Schedule not updated.");
+        }
+      },(error) => {
+        alert("Schedule name exists, but was made by another user. Cannot update.")
+      }
+    )
+  }
+
+  // remove course from user schedule
   removeCourse(subj, cour): void {
     const l = this.editSchedule.courses.findIndex(x => (x.subject === subj && x.courseCode === cour));
     if (l > -1) {
       this.editSchedule.courses.splice(l, 1)
     }
+  }
+
+  deleteSchedule(): void {
+    this.saved.deleteUserSpecific(this.delSchedule, this.auth.token).subscribe(
+      (response) => {
+        alert('Schedule successfully deleted.');
+      }, (error) => {
+        alert('Scheduled failed to be deleted.');
+      }
+    )
+    this.getUserSchedules();
   }
 
   // get subject and course codes for specific schedule, test for user input, print timetable
