@@ -43,9 +43,19 @@
             </table>
         </li>
         <li *ngIf="allSchedules !== null">Schedule names and number of courses saved to them:</li>
-        <li *ngFor="let a of allSchedules">
-            <span class="subject" dir="ltr">{{a.name}}</span>
+        <li *ngFor="let a of allSchedules; index as i">
+            <span class="subject" dir="ltr" (click)="showCourses(i)">{{a.name}}</span>
             <span class="course" dir="ltr">{{a.number}}</span>
+            <span>Last modified on: {{a.date | date:'medium'}}, </span>
+            <span>by: {{a.displayName}}</span>
+            <div *ngIf="show[i]">
+                <span (click)="getTimetable(a.name)">View Full Timetable</span>
+                <span>{{a.description}}</span>
+                <div *ngFor="let c of a.courses">
+                    <span class="subject">{{c.subject}}</span>
+                    <span class="course">{{c.courseCode}}</span>
+                </div>
+            </div>
         </li>
     </ul>
 </div>

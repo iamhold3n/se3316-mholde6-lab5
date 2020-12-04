@@ -12,6 +12,7 @@ export class SavedComponent implements OnInit {
   specificSchedule = { name: "", courses: [] };
   courseList;
   allSchedules = null;
+  show = [];
 
   constructor(private saved: SavedService, private builder: BuilderService) { }
 
@@ -31,6 +32,9 @@ export class SavedComponent implements OnInit {
     this.saved.getAllSchedules().subscribe(
       (response) => {
         this.allSchedules = response;
+        for(let i in this.allSchedules) {
+          this.show.push(false);
+        }
       }
     )
   }
@@ -44,28 +48,7 @@ export class SavedComponent implements OnInit {
       if (this.badchar.test(sname)) {
         alert("Disallowed characters are detected, please try again with a new schedule name.");
       }
-      else {
-        this.specificSchedule.courses = [];
-        this.allSchedules = null;
-
-        this.saved.getSpecificSchedule(sname).subscribe(
-          (response) => {
-            this.courseList = response;
-            this.courseList.forEach(e => {
-              this.builder.getSearchTimetable(e.subject, e.courseCode, "").subscribe(
-                (response) => {
-                  this.specificSchedule.name = sname;
-                  this.specificSchedule.courses.push(response);
-                  console.log(response);
-                }
-              )
-            })
-          },
-          (error) => {
-            alert("Schedule name does not exist.");
-          }
-        )
-      }
+      else this.getTimetable(sname);
     }
     else {
       alert("Please enter a schedule name before searching.");
@@ -105,6 +88,32 @@ export class SavedComponent implements OnInit {
     else {
       alert("Please enter a schedule name before deleting.");
     }
+  }
+
+  showCourses(i) {
+    this.show[i] = !this.show[i];
+  }
+
+  getTimetable(s) {
+    this.specificSchedule.courses = [];
+    this.allSchedules = null;
+
+    this.saved.getSpecificSchedule(s).subscribe(
+      (response) => {
+        this.courseList = response;
+        this.courseList.forEach(e => {
+          this.builder.getSearchTimetable(e.subject, e.courseCode, "").subscribe(
+            (response) => {
+              this.specificSchedule.name = s;
+              this.specificSchedule.courses.push(response);
+            }
+          )
+        })
+      },
+      (error) => {
+        alert("Schedule name does not exist.");
+      }
+    )
   }
 
 }

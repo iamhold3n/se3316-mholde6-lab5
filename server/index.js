@@ -215,12 +215,25 @@ router.get('/soft/:key', (req, res) => {
 
 // get all public schedules
 router.get('/schedule', (req, res) => {
-    // rewrite existing schedule search route
+    let data = [];
+    let filter = db.get('schedules').filter({private: false}).orderBy('date', 'desc').take(10).value();
+    for (s in filter) {
+        filter[s].number = filter[s].courses.length
+        data.push(filter[s]);
+    }
+    res.status(200).send(data);
 })
 
 // get specific public schedule timetable
 router.get('/schedule/:specific', (req, res) => {
-    // rewrite existing specific schedule search route
+    if (!db.get('schedules').find({ name: req.params.specific }).value()) res.status(404).send({ "error" : "Cannot get courses, schedule does not exist." });
+    else {
+        if (db.get('schedules').find({ name: req.params.specific }).get('private').value()) res.status(403).send({ error: "Not authorized." })
+        else {
+            let courses = db.get('schedules').find({ name: req.params.specific }).get('courses').value();
+            res.status(200).send(courses);
+        }
+    }
 })
 
 // === USER ROUTES ===
@@ -265,7 +278,7 @@ router.put('/auth/schedule', [
             }
             else {
                 const data = req.body;
-                if (db.get('schedules').find({name: data.name}).value()) res.status(403).send({ "error" : "Cannot create, schedule name already exists." });
+                if (db.get('schedules').find({name: data.name}).value()) res.status(403).send({ error : "Cannot create, schedule name already exists." });
                 else {
                     db.get('schedules').push(data).write();
                     res.status(200).send({ "success" : "Schedule created." });
@@ -298,7 +311,7 @@ router.post('/auth/schedule', [
             }
             else {
                 const data = req.body;
-                if (!db.get('schedules').find({name: data.name}).value()) res.status(404).send({ "error" : "Cannot update, schedule does not exist." });
+                if (!db.get('schedules').find({name: data.name}).value()) res.status(404).send({ error : "Cannot update, schedule does not exist." });
                 else {
                     db.get('schedules').remove({ name: data.name }).write();
                     db.get('schedules').push(data).write();

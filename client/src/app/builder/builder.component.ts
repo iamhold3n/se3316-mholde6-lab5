@@ -13,9 +13,11 @@ export class BuilderComponent implements OnInit {
   diffSubj = [];
   courseListData;
   searchData;
-  savedCourses = { name: "", user: "", displayName: "", description: "", private: true, date: new Date(), courses: [] };
+  savedCourses = { name: "", user: "", displayName: "", description: "", private: true, date: Date.now(), courses: [] };
   badchar = /[ `!@#$%^&*()_+\-=\[\]{};':"\\|,.<>\/?~]/;
   badcharspaces = /[`!@#$%^&*()_+\-=\[\]{};':"\\|,.<>\/?~]/;
+  goodnum = /^[0-9]+$/;
+  goodsuf = /^[a-bA-B]+$/;
   added;
 
   constructor(private builder: BuilderService, private saved: SavedService, private auth: AuthService) { }
@@ -71,6 +73,11 @@ export class BuilderComponent implements OnInit {
 
     if (this.badchar.test(suf) || this.badchar.test(c)) {
       alert("Disallowed characters are detected, please try again with a valid course code/suffix.");
+      return;
+    }
+
+    if (!c.match(this.goodnum) || (!suf.match(this.goodsuf) && suf !== "")) {
+      alert("Use only numbers in the course code, and A or B in the suffix.");
       return;
     }
 
@@ -140,7 +147,7 @@ export class BuilderComponent implements OnInit {
         this.savedCourses.user = this.auth.uuid;
         this.savedCourses.displayName = this.auth.displayName;
         console.log(this.savedCourses.displayName);
-        this.savedCourses.date = new Date();
+        this.savedCourses.date = Date.now();
         this.savedCourses.private = (<HTMLInputElement>document.getElementById('checkPrivate')).checked;
         this.savedCourses.description = (<HTMLInputElement>document.getElementById('saveDesc')).value;
 

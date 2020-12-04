@@ -11,12 +11,12 @@ export class SavedService {
 
   // get specific schedule sch
   getSpecificSchedule(sch) {
-    return this.http.get(`${this.url}/schedules/${sch}`);
+    return this.http.get(`${this.url}/schedule/${sch}`);
   }
 
   // get all schedules
   getAllSchedules() {
-    return this.http.get(`${this.url}/schedules`);
+    return this.http.get(`${this.url}/schedule`);
   }
 
   // delete specific schedule sch
