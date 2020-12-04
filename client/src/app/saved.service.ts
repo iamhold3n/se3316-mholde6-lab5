@@ -48,4 +48,14 @@ export class SavedService {
   deleteAllSchedules() {
     return this.http.delete(`${this.url}/schedules/`);
   }
+
+  getUsers(token) {
+    const headers = { headers: new HttpHeaders({'Authorization': 'Bearer ' + token})};
+    return this.http.get(`${this.url}/admin/user`, headers);
+  }
+
+  getReviews(token) {
+    const headers = { headers: new HttpHeaders({'Authorization': 'Bearer ' + token})};
+    return this.http.get(`${this.url}/admin/review`, headers);
+  }
 }

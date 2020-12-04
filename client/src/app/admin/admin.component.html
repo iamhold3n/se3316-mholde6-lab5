@@ -1,1 +1,10 @@
-<p>admin works!</p>
+<div id="admin">
+    <span (click)="getUsers()" class="savedButtons left return">USERS</span>
+    <span (click)="getReviews()" class="savedButtons right delete">REVIEWS</span>
+    <ul *ngIf="users!==null" id="users">
+        <li *ngFor="let u of users.users">{{u.displayName}}</li>
+    </ul>
+    <ul *ngIf="reviews!==null" id="reviews">
+        <li *ngFor="r of reviews">{{r.review}}</li>
+    </ul>
+</div>

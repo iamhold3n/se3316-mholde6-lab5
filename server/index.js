@@ -419,42 +419,128 @@ router.put('/auth/review/:subject/:course', [
 // === ADMIN ROUTES ===
 // get list of users
 router.get('/admin/user', (req, res) => {
-    let authStatus, adminStatus, decoded;
-    checkAuth(req, authStatus, adminStatus, decoded);
-    if (authStatus && adminStatus) {
-        // grab users from database
-    }
-    else res.status(403).send({ error : "Not authorized." });
+    authHeader = req.header('Authorization');
+    
+    if (authHeader) {
+        const bearer = authHeader.split(' ');
+        const token = bearer[1];
+
+        admin.auth().verifyIdToken(token)
+        .then((decodedToken) => {
+            if (decodedToken.admin === true) {
+                admin.auth().listUsers().then((result) => res.status(200).send(result));
+            }
+        }).catch((error) => {
+            res.status(403).send({ error : "Not authorized." });
+        })
+    } else res.status(403).send({ error : "Not authorized." });
 });
 
-// change permissions or status of user
-router.post('/admin/user', (req, res) => {
-    let authStatus, adminStatus, decoded;
-    checkAuth(req, authStatus, adminStatus, decoded);
-    if (authStatus && adminStatus) {
-        // change user account in database
-    }
-    else res.status(403).send({ error : "Not authorized." });
+router.get('/users/', (req, res) => {
+    admin.auth().listUsers().then((result) => res.status(200).send(result));
+})
+
+router.get('/users/:uid', (req, res) => {
+    admin.auth().setCustomUserClaims(req.params.uid, { admin: true })
+    res.status(200).send("Success");
+})
+
+// change permissions of user
+router.post('/admin/user/admin', [
+    body('uid').trim().escape(),
+    body('admin').isBoolean(),
+],  (req, res) => {
+    authHeader = req.header('Authorization');
+    
+    if (authHeader) {
+        const bearer = authHeader.split(' ');
+        const token = bearer[1];
+
+        admin.auth().verifyIdToken(token)
+        .then((decodedToken) => {
+            if (decodedToken.admin === true) {
+                const errors = validationResult(req);
+                if (!errors.isEmpty()){
+                    return res.status(400).json({ errors: errors.array() });
+                }
+                else {
+                    if (req.body.admin) admin.auth().setCustomUserClaims(req.body.uid, { admin: true });
+                    else admin.auth().setCustomUserClaims(req.body.uid, { admin: false });
+                    res.status(200).send({ success : 'User privileges successfully changed.'})
+                }
+            }
+        }).catch((error) => {
+            res.status(403).send({ error : "Not authorized." });
+        })
+    } else res.status(403).send({ error : "Not authorized." });
+});
+
+// change status of user
+router.post('/admin/user/disabled', [
+    body('uid').trim().escape(),
+    body('disabled').isBoolean(),
+], (req, res) => {
+    authHeader = req.header('Authorization');
+    
+    if (authHeader) {
+        const bearer = authHeader.split(' ');
+        const token = bearer[1];
+
+        admin.auth().verifyIdToken(token)
+        .then((decodedToken) => {
+            if (decodedToken.admin === true) {
+                const errors = validationResult(req);
+                if (!errors.isEmpty()){
+                    return res.status(400).json({ errors: errors.array() });
+                }
+                else {
+                    if (req.body.disabled) admin.auth().updateUser(req.body.uid, { disabled: true });
+                    else admin.auth().updateUser(req.body.uid, { disabled: false });
+                    res.status(200).send({ success : 'User status successfully changed.'})
+                }
+            }
+        }).catch((error) => {
+            res.status(403).send({ error : "Not authorized." });
+        })
+    } else res.status(403).send({ error : "Not authorized." });
 });
 
 // get list of reviews
 router.get('/admin/review', (req, res) => {
-    let authStatus, adminStatus, decoded;
-    checkAuth(req, authStatus, adminStatus, decoded);
-    if (authStatus && adminStatus) {
-        // get list of reviews from database
-    }
-    else res.status(403).send({ error : "Not authorized." });
+    authHeader = req.header('Authorization');
+    
+    if (authHeader) {
+        const bearer = authHeader.split(' ');
+        const token = bearer[1];
+
+        admin.auth().verifyIdToken(token)
+        .then((decodedToken) => {
+            if (decodedToken.admin === true) {
+                
+            }
+        }).catch((error) => {
+            res.status(403).send({ error : "Not authorized." });
+        })
+    } else res.status(403).send({ error : "Not authorized." });
 });
 
 // change reviews
 router.post('/admin/review', (req, res) => {
-    let authStatus, adminStatus, decoded;
-    checkAuth(req, authStatus, adminStatus, decoded);
-    if (authStatus && adminStatus) {
-        // hide or show review from database
-    }
-    else res.status(403).send({ error : "Not authorized." });
+    authHeader = req.header('Authorization');
+    
+    if (authHeader) {
+        const bearer = authHeader.split(' ');
+        const token = bearer[1];
+
+        admin.auth().verifyIdToken(token)
+        .then((decodedToken) => {
+            if (decodedToken.admin === true) {
+                
+            }
+        }).catch((error) => {
+            res.status(403).send({ error : "Not authorized." });
+        })
+    } else res.status(403).send({ error : "Not authorized." });
 });
 
 app.use('/api', router); // Set the routes at '/api'

@@ -7,7 +7,7 @@
   <div id="mode">
     <span id="buildSel" routerLink="/builder">SEARCH & BUILD</span>
     <span id="savedSel" routerLink="/saved">ACCESS SAVED DRAFTS</span>
-    <span *ngIf="auth.user | async as user" id="adminSel" routerLink="/admin">ADMIN PANEL</span>
+    <span *ngIf="auth.admin" id="adminSel" routerLink="/admin">ADMIN PANEL</span>
     <hr>
   </div>
   <router-outlet></router-outlet>

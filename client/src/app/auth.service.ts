@@ -1,6 +1,8 @@
 import { AfterContentChecked, Injectable } from '@angular/core';
 import { AngularFireAuth } from '@angular/fire/auth';
+import { FormBuilder } from '@angular/forms';
 import firebase from 'firebase/app';
+import 'firebase/auth';
 
 @Injectable({
   providedIn: 'root'
@@ -10,6 +12,7 @@ export class AuthService {
   displayName;
   token;
   uuid;
+  admin = false;
 
   constructor(public af: AngularFireAuth) {
     this.user = af.user;
@@ -55,12 +58,24 @@ export class AuthService {
   getUser() {
     this.af.currentUser.then((user) => {
       if (user) {
+        this.checkAdmin();
         user.getIdToken(true).then(token => {
           this.token = token;
         })
         this.uuid = user.uid;
         this.displayName = user.displayName;
-      }
+      } else this.admin = false;
     })
+  }
+
+  checkAdmin() {
+    firebase.auth().currentUser.getIdTokenResult()
+    .then((idTokenResult) => {
+      if (!!idTokenResult.claims.admin) {
+        this.admin = true;
+      } else {
+        this.admin = false;
+      }
+    }).catch((error) => console.log("No user logged in."));
   }
 }
