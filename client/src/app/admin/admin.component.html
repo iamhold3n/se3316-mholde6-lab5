@@ -2,7 +2,12 @@
     <span (click)="getUsers()" class="savedButtons left return">USERS</span>
     <span (click)="getReviews()" class="savedButtons right delete">REVIEWS</span>
     <ul *ngIf="users!==null" id="users">
-        <li *ngFor="let u of users.users">{{u.displayName}}</li>
+        <li *ngFor="let u of users.users">
+            <span>{{u.displayName}}</span>
+            <span (click)="toggleDisable(u.uid, u.disabled)">{{u.disabled}}</span>
+            <span *ngIf="u.customClaims; else notAdmin" (click)="toggleAdmin(u.uid, true)">{{u.customClaims.admin}}</span>
+            <ng-template #notAdmin><span (click)="toggleAdmin(u.uid, false)">false</span></ng-template>
+        </li>
     </ul>
     <ul *ngIf="reviews!==null" id="reviews">
         <li *ngFor="r of reviews">{{r.review}}</li>
