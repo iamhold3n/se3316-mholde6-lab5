@@ -21,8 +21,12 @@ export class SavedService {
 
   getUserSchedules(token) {
     const headers = { headers: new HttpHeaders({'Authorization': 'Bearer ' + token})};
-    console.log('Sending get request.');
     return this.http.get(`${this.url}/auth/schedule/user`, headers)
+  }
+
+  getUserSpecific(sch, token) {
+    const headers = { headers: new HttpHeaders({'Authorization': 'Bearer ' + token})};
+    return this.http.get(`${this.url}/auth/schedule/user/${sch}`, headers)
   }
 
   // delete specific schedule sch

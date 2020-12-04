@@ -11,11 +11,13 @@ import firebase from 'firebase/app';
 })
 export class SavedComponent implements OnInit {
   badchar = /[ `!@#$%^&*()_+\-=\[\]{};':"\\|,.<>\/?~]/;
+  badcharspaces = /[`!@#$%^&*()_+\-=\[\]{};':"\\|,.<>\/?~]/;
   specificSchedule = { name: "", courses: [] };
   courseList;
   allSchedules = null;
   show = [];
   userSchedules = null;
+  editSchedule = null;
 
   constructor(private saved: SavedService, private builder: BuilderService, private auth: AuthService) { }
 
@@ -29,6 +31,7 @@ export class SavedComponent implements OnInit {
   resetUI(): void {
     this.specificSchedule.name = "";
     this.specificSchedule.courses = [];
+    this.editSchedule = null;
     this.allSchedules = null;
     this.userSchedules = null;
   }
@@ -62,8 +65,51 @@ export class SavedComponent implements OnInit {
     }
   }
 
-  editUserSchedule(): void {
+  editUserSchedule(sch): void {
     this.resetUI();
+
+    if (firebase.auth().currentUser) {
+      this.saved.getUserSpecific(sch, this.auth.token).subscribe(
+        (response) => {
+          this.editSchedule = response[0];
+        }
+      );
+    } else {
+      alert("Please log in to access user schedules.");
+    }
+  }
+
+  saveSchedule(): void {
+    const name = (<HTMLInputElement>document.getElementById('saveName')).value;
+    const desc = (<HTMLInputElement>document.getElementById('saveDesc')).value;
+
+    if (name !== "") {
+      if (this.badchar.test(name) || this.badcharspaces.test(desc)) {
+        alert("Disallowed characters are detected, please try again with a new schedule name/description.");
+      }
+      else {
+        this.editSchedule.name = name;
+        this.editSchedule.user = this.auth.uuid;
+        this.editSchedule.displayName = this.auth.displayName;
+        console.log(this.editSchedule.displayName);
+        this.editSchedule.date = Date.now();
+        this.editSchedule.private = (<HTMLInputElement>document.getElementById('checkPrivate')).checked;
+        this.editSchedule.description = (<HTMLInputElement>document.getElementById('saveDesc')).value;
+
+        this.builder.updateSchedule(this.editSchedule, this.auth.token).subscribe(
+          (response) => {
+            alert("Schedule updated.");
+          }
+        )
+      }
+    }
+  }
+
+  removeCourse(subj, cour): void {
+    const l = this.editSchedule.courses.findIndex(x => (x.subject === subj && x.courseCode === cour));
+    if (l > -1) {
+      this.editSchedule.courses.splice(l, 1)
+    }
   }
 
   // get subject and course codes for specific schedule, test for user input, print timetable
