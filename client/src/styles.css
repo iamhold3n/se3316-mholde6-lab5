@@ -8,14 +8,14 @@ body {
 #topright {
     margin: none;
     float: right;
-    background-color: #634396;
-    border: 5px solid transparent;
-    border-radius: 5px;
 }
 #topright span {
     color: white;
     padding: 5px;
     font-size: 16px;
+    background-color: #634396;
+    border: 5px solid transparent;
+    border-radius: 5px;
 }
 #topright span:hover {
     font-weight: 900;
@@ -285,7 +285,7 @@ ul li {
     margin-top: 10px;
     margin-bottom: 10px;
 }
-#builder input, #saved input {
+#searchKeyword input, #searchCourse input, #builder input, #saved input {
     font-size: 20px;
     padding: 5px;
     border: 5px solid transparent;

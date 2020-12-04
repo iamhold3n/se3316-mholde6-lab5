@@ -13,8 +13,9 @@ export class BuilderComponent implements OnInit {
   diffSubj = [];
   courseListData;
   searchData;
-  savedCourses = { name: "", courses: [] };
+  savedCourses = { name: "", user: "", displayName: "", description: "", private: true, date: new Date(), courses: [] };
   badchar = /[ `!@#$%^&*()_+\-=\[\]{};':"\\|,.<>\/?~]/;
+  badcharspaces = /[`!@#$%^&*()_+\-=\[\]{};':"\\|,.<>\/?~]/;
   added;
 
   constructor(private builder: BuilderService, private saved: SavedService, private auth: AuthService) { }
@@ -24,6 +25,10 @@ export class BuilderComponent implements OnInit {
     const savedSel = document.getElementById('savedSel');
     buildSel.className = "selected";
     savedSel.className = "";
+
+    this.auth.getUser();
+    console.log(this.auth.token);
+    console.log(this.auth.displayName);
 
     this.populateSubjects();
   }
@@ -83,26 +88,25 @@ export class BuilderComponent implements OnInit {
 
   getSearchKeyword(): void {
     const k = (<HTMLInputElement>document.getElementById('keyword')).value;
-    if (k === "") {
-      alert("Please select a subject.");
+    if (k === "" || k.length < 4) {
+      alert("Please enter a keyword of valid length.");
       return;
     } else {
-      if (this.badchar.test(k)) {
+      if (this.badcharspaces.test(k)) {
         alert("Disallowed characters are detected, please try again with a valid course code/suffix.");
         return;
-      } else {
-        this.builder.getSearchKeyword(k).subscribe(
-          (response) => {
-            this.searchData = response;
-          },
-          (error) => {
-            this.searchData = "";
-            alert("Keyword found no matches.");
-          }
-        )
       }
     }
 
+    this.builder.getSearchKeyword(k).subscribe(
+      (response) => {
+        this.searchData = response;
+      },
+      (error) => {
+        this.searchData = "";
+        alert("Keyword found no matches.");
+      }
+    )
   }
 
   // add course to builder
@@ -126,12 +130,20 @@ export class BuilderComponent implements OnInit {
   saveSchedule(): void {
     console.log("Saving schedule...");
     const name = (<HTMLInputElement>document.getElementById('saveName')).value;
+    const desc = (<HTMLInputElement>document.getElementById('saveDesc')).value;
     if (name !== "") {
-      if (this.badchar.test(name)) {
-        alert("Disallowed characters are detected, please try again with a new schedule name.");
+      if (this.badchar.test(name) || this.badcharspaces.test(desc)) {
+        alert("Disallowed characters are detected, please try again with a new schedule name/description.");
       }
       else {
         this.savedCourses.name = name;
+        this.savedCourses.user = this.auth.uuid;
+        this.savedCourses.displayName = this.auth.displayName;
+        console.log(this.savedCourses.displayName);
+        this.savedCourses.date = new Date();
+        this.savedCourses.private = (<HTMLInputElement>document.getElementById('checkPrivate')).checked;
+        this.savedCourses.description = (<HTMLInputElement>document.getElementById('saveDesc')).value;
+
         this.saved.getSpecificSchedule(name).subscribe(
           (response) => { // schedule name does exist, update it
             if (confirm("Schedule name already exists, overwrite?")) this.updateSchedule();
@@ -147,7 +159,7 @@ export class BuilderComponent implements OnInit {
 
   // create new schedule with builder schedule
   createSchedule(): void {
-    this.builder.createSchedule(this.savedCourses).subscribe(
+    this.builder.createSchedule(this.savedCourses, this.auth.token).subscribe(
       (response) => {
         alert("Schedule successfully created.");
       },
@@ -159,7 +171,7 @@ export class BuilderComponent implements OnInit {
 
   // overwrite existing schedule with builder schedule
   updateSchedule(): void {
-    this.builder.updateSchedule(this.savedCourses).subscribe(
+    this.builder.updateSchedule(this.savedCourses, this.auth.token).subscribe(
       (response) => {
         alert("Schedule successuflly updated.");
       },

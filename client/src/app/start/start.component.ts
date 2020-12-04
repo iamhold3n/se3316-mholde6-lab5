@@ -11,7 +11,7 @@ export class StartComponent implements OnInit {
   registerForm = new FormGroup({
     email: new FormControl(''),
     password: new FormControl(''),
-    name: new FormControl('')
+    displayName: new FormControl('')
   });
 
   loginForm = new FormGroup({

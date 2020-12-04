@@ -175,25 +175,6 @@ router.delete('/schedules', (req, res) => {
 });
 
 // === ** LAB 5 NEW ** ===
-function checkAuth(req, authStatus, adminStatus, decoded) {
-    authHeader = req.header('Authorization');
-
-    if (authHeader) {
-        const bearer = authHeader.split(' ');
-        const token = bearer[1];
-
-        admin.auth().verifyIdToken(token)
-        .then((decodedToken) => {
-            authStatus = true;
-            decoded = decodedToken;
-            // check database if user is admin
-        }).catch((error) => {
-            authStatus = false;
-            adminStatus = false;
-        })
-    }
-};
-
 // === GUEST ROUTES ===
 // search catalog by subject/course/suffix
 router.get('/combo/:subject/:course/:suffix?', (req, res) => {
@@ -219,13 +200,17 @@ router.get('/combo/:subject/:course/:suffix?', (req, res) => {
 router.get('/soft/:key', (req, res) => {
     let data = [];
 
-    for (c in catalog) {
-        if ((stringSimilarity.compareTwoStrings(catalog[c].catalog_nbr.toString(), req.params.key.toString()) > 0.6) || (stringSimilarity.compareTwoStrings(catalog[c].className, req.params.key.toString().toUpperCase()) > 0.4))
-            data.push({subject:catalog[c].subject, courseCode:catalog[c].catalog_nbr, description:catalog[c].className, courseInfo:catalog[c].course_info, ext_description:catalog[c].catalog_description});
-    }
+    if (req.params.key.toString().length < 4) {
+        res.status(403).send({ "error" : "Keyword length invalid." });
+    } else {
+        for (c in catalog) {
+            if ((stringSimilarity.compareTwoStrings(catalog[c].catalog_nbr.toString(), req.params.key.toString()) > 0.6) || (stringSimilarity.compareTwoStrings(catalog[c].className, req.params.key.toString().toUpperCase()) > 0.4))
+                data.push({subject:catalog[c].subject, courseCode:catalog[c].catalog_nbr, description:catalog[c].className, courseInfo:catalog[c].course_info, ext_description:catalog[c].catalog_description});
+        }
 
-    if (data.length !== 0) res.status(200).send(data);
-    else res.status(404).send({ "error" : "No courses match keyword." });
+        if (data.length !== 0) res.status(200).send(data);
+        else res.status(404).send({ "error" : "No courses match keyword." });
+    }
 })
 
 // get all public schedules
@@ -260,23 +245,70 @@ router.get('/auth/schedule/:user/:specific', (req, res) => {
 });
 
 // create new schedule for user
-router.put('/auth/schedule', (req, res) => {
-    let authStatus, adminStatus, decoded;
-    checkAuth(req, authStatus, adminStatus, decoded);
-    if (authStatus) {
-        // create schedule in database for user
+router.put('/auth/schedule', [
+    body('name').isLength({ min: 3, max: 20 }).trim().escape(),
+    body('courses').isArray(),
+    body('courses.*.subject').trim().escape(),
+    body('courses.*.courseCode').isLength({ max: 5 }).trim().escape()
+], (req, res) => {
+    authHeader = req.header('Authorization');
+
+    if (authHeader) {
+        const bearer = authHeader.split(' ');
+        const token = bearer[1];
+
+        admin.auth().verifyIdToken(token)
+        .then((decodedToken) => {
+            const errors = validationResult(req);
+            if (!errors.isEmpty()){
+                return res.status(400).json({ errors: errors.array() });
+            }
+            else {
+                const data = req.body;
+                if (db.get('schedules').find({name: data.name}).value()) res.status(403).send({ "error" : "Cannot create, schedule name already exists." });
+                else {
+                    db.get('schedules').push(data).write();
+                    res.status(200).send({ "success" : "Schedule created." });
+                }
+            }
+        }).catch((error) => {
+            res.status(403).send({ error : "Not authorized." });
+        })
     }
-    else res.status(403).send({ error : "Not authorized." });
 });
 
 // update existing schedule for user
-router.post('/auth/schedule', (req, res) => {
-    let authStatus, adminStatus, decoded;
-    checkAuth(req, authStatus, adminStatus, decoded);
-    if (authStatus) {
-        // update schedule in database for user
+router.post('/auth/schedule', [
+    body('name').isLength({ min: 3, max: 20 }).trim().escape(),
+    body('courses').isArray(),
+    body('courses.*.subject').trim().escape(),
+    body('courses.*.courseCode').isLength({ max: 5 }).trim().escape()
+], (req, res) => {
+    authHeader = req.header('Authorization');
+
+    if (authHeader) {
+        const bearer = authHeader.split(' ');
+        const token = bearer[1];
+
+        admin.auth().verifyIdToken(token)
+        .then((decodedToken) => {
+            const errors = validationResult(req);
+            if (!errors.isEmpty()){
+                return res.status(400).json({ errors: errors.array() });
+            }
+            else {
+                const data = req.body;
+                if (!db.get('schedules').find({name: data.name}).value()) res.status(404).send({ "error" : "Cannot update, schedule does not exist." });
+                else {
+                    db.get('schedules').remove({ name: data.name }).write();
+                    db.get('schedules').push(data).write();
+                    res.status(200).send({ "success" : "Schedule updated." });
+                }
+            }
+        }).catch((error) => {
+            res.status(403).send({ error : "Not authorized." });
+        })
     }
-    else res.status(403).send({ error : "Not authorized." });
 })
 
 // delete existing schedule for user

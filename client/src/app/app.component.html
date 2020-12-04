@@ -1,7 +1,6 @@
 <div id="schedule">
   <img routerLink="/" [src]="'assets/img/schedule.png'" alt="scuffed">
   <div id="topright">
-    <span routerLink="/dmca">DMCA</span>
     <span *ngIf="auth.user | async as user" (click)="logout()">LOGOUT</span>
   </div>
 

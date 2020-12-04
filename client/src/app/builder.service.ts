@@ -1,5 +1,5 @@
 import { Injectable } from '@angular/core';
-import { HttpClient } from '@angular/common/http';
+import { HttpClient, HttpHeaders } from '@angular/common/http';
 
 @Injectable({
   providedIn: 'root'
@@ -47,12 +47,14 @@ export class BuilderService {
   }
 
   // create schedule with sch
-  createSchedule(sch) {
-    return this.http.put(this.url + "/schedules", sch);
+  createSchedule(sch, token) {
+    const headers = { headers: new HttpHeaders({'Authorization': 'Bearer ' + token})};
+    return this.http.put(this.url + "/auth/schedule", sch, headers);
   }
 
   // update schedule with sch
-  updateSchedule(sch) {
-    return this.http.post(this.url + "/schedules", sch);
+  updateSchedule(sch, token) {
+    const headers = { headers: new HttpHeaders({'Authorization': 'Bearer ' + token})};
+    return this.http.post(this.url + "/auth/schedule", sch, headers);
   }
 }

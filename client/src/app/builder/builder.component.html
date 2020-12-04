@@ -15,12 +15,17 @@
     <hr>
     <div id="searchKeyword">
         <span class="searchtext">Keyword: </span>
-        <input id="keyword" placeholder="Enter keyword to search" maxlength="20">
+        <input class="left right" id="keyword" placeholder="Enter keywords to search" maxlength="20">
     </div>
     <div class="searchButton"><button (click)="getSearchKeyword()" class="button">SEARCH</button></div>
     <div id="builder" *ngIf="added">
         <hr>
         <input class="left" id="saveName" placeholder="Enter name for schedule" maxlength="20"><span (click)="saveSchedule()" class="savedButtons right">SAVE</span>
+        <input class="left right" id="saveDesc" placeholder="Enter a description for your schedule" maxlength="30">
+        <label class="checkcontainer">PRIVATE
+            <input id="checkPrivate" type="checkbox" checked="checked">
+            <span class="checkmark"></span>
+        </label>
         <ul id="builderData">
             <li>Added Courses</li>
             <li *ngFor="let a of savedCourses.courses">
