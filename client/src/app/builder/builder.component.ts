@@ -20,6 +20,7 @@ export class BuilderComponent implements OnInit {
   goodsuf = /^[a-bA-B]+$/;
   added;
   unique;
+  courseReviews;
 
   constructor(private builder: BuilderService, private saved: SavedService, private auth: AuthService) { }
 
@@ -173,8 +174,7 @@ export class BuilderComponent implements OnInit {
     this.builder.createSchedule(this.savedCourses, this.auth.token).subscribe(
       (response) => {
         alert("Schedule successfully created.");
-      },
-      (error) => {
+      }, (error) => {
         alert("Schedule creation failed.");
       }
     )
@@ -185,8 +185,7 @@ export class BuilderComponent implements OnInit {
     this.builder.updateSchedule(this.savedCourses, this.auth.token).subscribe(
       (response) => {
         alert("Schedule successuflly updated.");
-      },
-      (error) => {
+      }, (error) => {
         alert("Schedule update failed.");
       }
     )
@@ -201,6 +200,35 @@ export class BuilderComponent implements OnInit {
 
     // hide builder area if no courses exist after removal
     if (this.savedCourses.courses.length === 0) this.added = 0;
+  }
+
+  addReview(subj, cour): void {
+    let review = { review: prompt("Please enter your review: ") };
+
+    if (review === null || review.review === "") {
+      alert("Review submission cancelled.");
+    } else {
+      if (this.badcharspaces.test(review.review)) alert("Disallowed characters are detected.");
+      else {
+        this.builder.postReview(subj, cour, review, this.auth.token).subscribe(
+          (response) => {
+            alert("Review submitted.");
+          }, (error) => {
+            alert("Review submission failed.");
+          }
+        )
+      }
+    }
+  }
+
+  viewReview(subj, cour): void {
+    this.builder.getReview(subj, cour).subscribe(
+      (response) => {
+        this.courseReviews = response;
+      }, (error) => {
+        alert(error);
+      }
+    )
   }
 
 }

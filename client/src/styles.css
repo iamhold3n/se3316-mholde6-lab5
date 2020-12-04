@@ -320,3 +320,10 @@ ul li {
     border-bottom-right-radius: 5px;
     padding: 2px;
 }
+.popup {
+    width: 400px;
+    position: fixed;
+    bottom: 0;
+    right: 15px;
+    z-index: 9;
+}

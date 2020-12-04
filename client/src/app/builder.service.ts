@@ -57,4 +57,13 @@ export class BuilderService {
     const headers = { headers: new HttpHeaders({'Authorization': 'Bearer ' + token})};
     return this.http.post(this.url + "/auth/schedule", sch, headers);
   }
+
+  postReview(subj, cour, review, token) {
+    const headers = { headers: new HttpHeaders({'Authorization': 'Bearer ' + token})};
+    return this.http.put(this.url + `/auth/review/${subj}/${cour}`, review, headers);
+  }
+
+  getReview(subj, cour) {
+    return this.http.get(this.url + `/reviews/${subj}/${cour}`);
+  }
 }

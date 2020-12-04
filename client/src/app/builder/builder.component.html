@@ -42,6 +42,8 @@
             <span class="subject">{{d.subject}}</span>
             <span class="course">{{d.courseCode}}</span>
             <span class="description">{{d.description}}</span>
+            <span *ngIf="auth.user | async as user" class="review" (click)="addReview(d.subject, d.courseCode)">ADD REVIEW</span>
+            <span class="review" (click)="viewReview(d.subject, d.courseCode)">VIEW REVIEWS</span>
             <div class="ext_description">{{d.ext_description}}</div>
             <table class="courseinfotable">
                 <tr>
@@ -75,5 +77,10 @@
                 </tr>
             </table>
         </li>
+    </ul>
+</div>
+<div class="popup" *ngIf="courseReviews">
+    <ul>
+        <li *ngFor="let r of courseReviews">{{r.review}}</li>
     </ul>
 </div>

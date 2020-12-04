@@ -184,7 +184,6 @@ export class SavedComponent implements OnInit {
     else {
       alert("Please enter a schedule name before searching.");
     }
-    
   }
 
   // delete all saved schedules

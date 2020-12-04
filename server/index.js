@@ -236,6 +236,15 @@ router.get('/schedule/:specific', (req, res) => {
     }
 })
 
+// get reviews for a course
+router.get('/reviews/:subject/:course', (req, res) => {
+    let data = [];
+    const c = req.params.subject+req.params.course;
+    data = db.get('reviews').filter({ course: c, hidden: false }).value();
+    if (data === []) res.status(404).send({ error: "Reviews not found for course." })
+    else res.status(200).send(data);
+})
+
 // === USER ROUTES ===
 // get list of created schedules for user
 router.get('/auth/schedule/user', (req, res) => {
@@ -380,13 +389,31 @@ router.delete('/auth/schedule/user/:specific', (req, res) => {
 });
 
 // add a comment to a course from a user
-router.put('/auth/review', (req, res) => {
-    let authStatus, adminStatus, decoded;
-    checkAuth(req, authStatus, adminStatus, decoded);
-    if (authStatus) {
-        // create review of course from user in database
-    }
-    else res.status(403).send({ error : "Not authorized." });
+router.put('/auth/review/:subject/:course', [
+    body('review').not().isEmpty().trim().escape()
+], (req, res) => {
+    authHeader = req.header('Authorization');
+    const c = req.params.subject+req.params.course;
+    
+    if (authHeader) {
+        const bearer = authHeader.split(' ');
+        const token = bearer[1];
+
+        admin.auth().verifyIdToken(token)
+        .then((decodedToken) => { 
+            const errors = validationResult(req);
+            if (!errors.isEmpty()){
+                return res.status(400).json({ errors: errors.array() });
+            }
+            else {
+                const data = req.body;
+                const review = { course: c, hidden: false, review: data.review };
+                db.get('reviews').push(review).write();
+            }
+        }).catch((error) => {
+            res.status(403).send({ error : "Not authorized." });
+        })
+    } else res.status(403).send({ error : "Not authorized." });
 });
 
 // === ADMIN ROUTES ===
