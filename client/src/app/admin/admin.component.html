@@ -10,6 +10,10 @@
         </li>
     </ul>
     <ul *ngIf="reviews!==null" id="reviews">
-        <li *ngFor="r of reviews">{{r.review}}</li>
+        <li *ngFor="let r of reviews">
+            <span>{{r.course}}</span>
+            <span>{{r.review}}</span>
+            <span (click)="toggleHidden(r.course, r.review, r.hidden)">{{r.hidden}}</span>
+        </li>
     </ul>
 </div>

@@ -50,12 +50,23 @@ export class AdminComponent implements OnInit {
       }
     )
   }
+
   toggleDisable(uid, toggle): void {
     const disable = { uid: uid, disabled: !toggle };
     this.saved.toggleDisable(disable, this.auth.token).subscribe(
       (response) => {
         alert("Successfully toggled admin status of account.");
         this.getUsers();
+      }
+    );
+  }
+
+  toggleHidden(course, review, toggle): void {
+    const rev = { course: course, review: review, hidden: !toggle }
+    this.saved.toggleVisibility(rev, this.auth.token).subscribe(
+      (response) => {
+        alert("Successfully toggled visibility status of review.");
+        this.getReviews();
       }
     );
   }

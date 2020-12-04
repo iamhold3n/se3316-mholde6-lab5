@@ -436,15 +436,6 @@ router.get('/admin/user', (req, res) => {
     } else res.status(403).send({ error : "Not authorized." });
 });
 
-router.get('/users/', (req, res) => {
-    admin.auth().listUsers().then((result) => res.status(200).send(result));
-})
-
-router.get('/users/:uid', (req, res) => {
-    admin.auth().setCustomUserClaims(req.params.uid, { admin: true })
-    res.status(200).send("Success");
-})
-
 // change permissions of user
 router.post('/admin/user/admin', [
     body('uid').trim().escape(),
@@ -516,7 +507,8 @@ router.get('/admin/review', (req, res) => {
         admin.auth().verifyIdToken(token)
         .then((decodedToken) => {
             if (decodedToken.admin === true) {
-                
+                const reviews = db.get('reviews').value();
+                res.status(200).send(reviews);
             }
         }).catch((error) => {
             res.status(403).send({ error : "Not authorized." });
@@ -525,7 +517,11 @@ router.get('/admin/review', (req, res) => {
 });
 
 // change reviews
-router.post('/admin/review', (req, res) => {
+router.post('/admin/review', [
+    body('course').trim().escape(),
+    body('review').trim().escape(),
+    body('hidden').isBoolean(),
+], (req, res) => {
     authHeader = req.header('Authorization');
     
     if (authHeader) {
@@ -535,7 +531,14 @@ router.post('/admin/review', (req, res) => {
         admin.auth().verifyIdToken(token)
         .then((decodedToken) => {
             if (decodedToken.admin === true) {
-                
+                const errors = validationResult(req);
+                if (!errors.isEmpty()){
+                    return res.status(400).json({ errors: errors.array() });
+                }
+                else {
+                    db.get('reviews').find({ course: req.body.course, review: req.body.review }).assign({ hidden: req.body.hidden }).write();
+                    res.status(200).send({ success : "Successfully toggled visibility of review."})
+                }
             }
         }).catch((error) => {
             res.status(403).send({ error : "Not authorized." });

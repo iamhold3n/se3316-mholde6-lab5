@@ -64,8 +64,14 @@ export class SavedService {
     return this.http.post(`${this.url}/admin/user/disabled`, toggle, headers);
   }
 
+  toggleVisibility(toggle, token) {
+    const headers = { headers: new HttpHeaders({'Authorization': 'Bearer ' + token})};
+    return this.http.post(`${this.url}/admin/review`, toggle, headers);
+  }
+
   getReviews(token) {
     const headers = { headers: new HttpHeaders({'Authorization': 'Bearer ' + token})};
     return this.http.get(`${this.url}/admin/review`, headers);
   }
+
 }
