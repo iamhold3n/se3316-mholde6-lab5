@@ -238,13 +238,19 @@ router.get('/schedule/:specific', (req, res) => {
 
 // === USER ROUTES ===
 // get list of created schedules for user
-router.get('/auth/schedule/:user', (req, res) => {
-    let authStatus, adminStatus, decoded;
-    checkAuth(req, authStatus, adminStatus, decoded);
-    if (authStatus) {
-        // get all schedules in database for specific user
-    }
-    else res.status(403).send({ error : "Not authorized." });
+router.get('/auth/schedule/user', (req, res) => {
+    authHeader = req.header('Authorization');
+
+    if (authHeader) {
+        const bearer = authHeader.split(' ');
+        const token = bearer[1];
+
+        admin.auth().verifyIdToken(token)
+        .then((decodedToken) => {
+            let data = db.get('schedules').filter({ user: decodedToken.uid }).value();
+            res.status(200).send(data);
+        })
+    } else res.status(403).send({ error : "Not authorized." });
 });
 
 // get specific schedule for user

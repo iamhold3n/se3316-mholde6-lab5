@@ -11,7 +11,7 @@ export class AuthService {
   token;
   uuid;
 
-  constructor(private af: AngularFireAuth) {
+  constructor(public af: AngularFireAuth) {
     this.user = af.user;
   }
 
@@ -47,6 +47,9 @@ export class AuthService {
 
   logout() {
     this.af.signOut();
+    this.displayName = undefined;
+    this.token = undefined;
+    this.uuid = undefined;
   }
 
   getUser() {

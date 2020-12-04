@@ -1,6 +1,6 @@
 <div id="saved">
-    <span (click)="getAllSchedules()" class="savedButtons left return">RETURN ALL</span>
-    <span (click)="deleteAllSchedules()" class="savedButtons right delete">DELETE ALL</span>
+    <span (click)="getAllSchedules()" class="savedButtons left return">PUBLIC LISTS</span>
+    <span (click)="getUserSchedules()" class="savedButtons right delete">USER LISTS</span>
     <span (click)="getSpecificSchedule()" class="savedButtons left return">SEARCH</span>
     <input id="schedInput" maxlength="20" placeholder="Schedule name">
     <span (click)="deleteSpecificSchedule()" class="savedButtons right delete">DELETE</span>
@@ -56,6 +56,11 @@
                     <span class="course">{{c.courseCode}}</span>
                 </div>
             </div>
+        </li>
+        <li *ngIf="userSchedules !== null">Schedule names:</li>
+        <li *ngFor="let u of userSchedules">
+            <span class="subject" dir="ltr" (click)="editUserSchedule(u.name)">{{u.name}}</span>
+            <span class="course" dir="ltr">{{u.number}}</span>
         </li>
     </ul>
 </div>

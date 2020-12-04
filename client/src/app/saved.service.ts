@@ -1,5 +1,5 @@
 import { Injectable } from '@angular/core';
-import { HttpClient } from '@angular/common/http';
+import { HttpClient, HttpHeaders } from '@angular/common/http';
 
 @Injectable({
   providedIn: 'root'
@@ -17,6 +17,12 @@ export class SavedService {
   // get all schedules
   getAllSchedules() {
     return this.http.get(`${this.url}/schedule`);
+  }
+
+  getUserSchedules(token) {
+    const headers = { headers: new HttpHeaders({'Authorization': 'Bearer ' + token})};
+    console.log('Sending get request.');
+    return this.http.get(`${this.url}/auth/schedule/user`, headers)
   }
 
   // delete specific schedule sch

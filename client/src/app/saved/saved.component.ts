@@ -1,6 +1,8 @@
 import { Component, OnInit } from '@angular/core';
 import { SavedService } from '../saved.service';
 import { BuilderService } from '../builder.service';
+import { AuthService } from '../auth.service';
+import firebase from 'firebase/app';
 
 @Component({
   selector: 'app-saved',
@@ -13,8 +15,9 @@ export class SavedComponent implements OnInit {
   courseList;
   allSchedules = null;
   show = [];
+  userSchedules = null;
 
-  constructor(private saved: SavedService, private builder: BuilderService) { }
+  constructor(private saved: SavedService, private builder: BuilderService, private auth: AuthService) { }
 
   ngOnInit(): void {
     const buildSel = document.getElementById('buildSel');
@@ -23,11 +26,17 @@ export class SavedComponent implements OnInit {
     savedSel.className = "selected";
   }
 
+  resetUI(): void {
+    this.specificSchedule.name = "";
+    this.specificSchedule.courses = [];
+    this.allSchedules = null;
+    this.userSchedules = null;
+  }
+
   // get list of all schedules and number of courses in each one
   getAllSchedules(): void {
     console.log("Getting all schedules...");
-    this.specificSchedule.name = "";
-    this.specificSchedule.courses = [];
+    this.resetUI();
 
     this.saved.getAllSchedules().subscribe(
       (response) => {
@@ -37,6 +46,24 @@ export class SavedComponent implements OnInit {
         }
       }
     )
+  }
+
+  getUserSchedules(): void {
+    this.resetUI();
+
+    if (firebase.auth().currentUser) {
+      this.saved.getUserSchedules(this.auth.token).subscribe(
+        (response) => {
+          this.userSchedules = response;
+        }
+      );
+    } else {
+      alert("Please log in to access user schedules.");
+    }
+  }
+
+  editUserSchedule(): void {
+    this.resetUI();
   }
 
   // get subject and course codes for specific schedule, test for user input, print timetable
@@ -95,8 +122,7 @@ export class SavedComponent implements OnInit {
   }
 
   getTimetable(s) {
-    this.specificSchedule.courses = [];
-    this.allSchedules = null;
+    this.resetUI();
 
     this.saved.getSpecificSchedule(s).subscribe(
       (response) => {
