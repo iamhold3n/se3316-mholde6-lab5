@@ -1,36 +1,37 @@
 <p>Welcome to Scuffed Draft My Schedule!</p>
+<p>You can build a course schedule and search for courses by clicking 'Search & Build'.</p>
+<p>You can access saved schedules by clicking on 'Access Saved Drafts'</p>
 <div *ngIf="auth.user | async as user; else showLogin">
-    <p>You're already logged in.</p>
+    <p>Welcome {{this.auth.cookie.get('displayName')}}!</p>
 </div>
 
 <ng-template #showLogin>
-    <form [formGroup]="loginForm">
-        <div>
-            <label>Email</label>
-            <input type="email" formControlName="email" required>
-        </div>
-        <div>
-            <label>Password</label>
-            <input type="password" formControlName="password" required>
-        </div>
-        <button (click)="loginEmail(loginForm.value)">LOGIN</button>
-    </form>
-
-    <button (click)="loginGoogle()">GOOGLE</button>
-
-    <form [formGroup]="registerForm">
-        <div>
-            <label>Email</label>
-            <input type="email" formControlName="email" required>
-        </div>
-        <div>
-            <label>Password</label>
-            <input type="password" formControlName="password" required>
-        </div>
-        <div>
-            <label>Name</label>
-            <input type="name" formControlName="displayName" required>
-        </div>
-        <button (click)="registerEmail(registerForm.value)">REGISTER</button>
-    </form>
+    <div id="login">
+        <p>Login or register below.</p>
+        <hr>
+        <form [formGroup]="loginForm">
+            <div>
+                <input class="left right" type="email" formControlName="email" placeholder="Email" required>
+            </div>
+            <div>
+                <input class="left right" type="password" formControlName="password" placeholder="Password" required>
+            </div>
+            <button class="button" (click)="loginEmail(loginForm.value)">LOGIN</button>
+        </form>
+        
+        <button class="button" (click)="loginGoogle()">SIGN IN WITH GOOGLE</button>
+        <hr>
+        <form [formGroup]="registerForm">
+            <div>
+                <input class="left right" type="email" formControlName="email" placeholder="Email" required>
+            </div>
+            <div>
+                <input class="left right" type="password" formControlName="password" placeholder="Password" required>
+            </div>
+            <div>
+                <input class="left right" type="name" formControlName="displayName" placeholder="Display Name" required>
+            </div>
+            <button class="button" (click)="registerEmail(registerForm.value)">REGISTER</button>
+        </form>
+    </div>
 </ng-template>

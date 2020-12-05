@@ -23,16 +23,18 @@ export class AuthService {
       res.user.updateProfile({ displayName: value.displayName })
       .then(res => { 
         console.log('Updated display name.'); 
-        this.getUser() 
+        this.getUser();
       }).catch(error => { console.log('Failed to add name.') })
-    }).catch(error => { console.log('Registration failed.') });
+    }).catch(error => { alert('This email address is already in use.') });
   }
 
   loginEmail(value) {
     this.af.signInWithEmailAndPassword(value.email, value.password)
     .then(res => { this.getUser() })
     .catch(error => { 
-      if (error.code === "auth/user-disabled") alert("This account has been disabled by the administrator.")
+      if (error.code === "auth/user-disabled") alert("This account has been disabled by the administrator.");
+      else if (error.code === "auth/wrong-password") alert("Wrong password for account.");
+      else if (error.code === "auth/user-not-found") alert("No account exists for this email.");
       else (console.log(error));
     });
   }
@@ -59,6 +61,7 @@ export class AuthService {
           this.cookie.set('token', token);
           this.cookie.set('uid', user.uid);
           this.cookie.set('displayName', user.displayName);
+          this.cookie.set('email', user.email);
         })
       } 
     })
@@ -71,5 +74,13 @@ export class AuthService {
         this.cookie.set('admin', 'true');
       }
     }).catch((error) => console.log("No user logged in."));
+  }
+
+  resetPassword() {
+    this.af.sendPasswordResetEmail(this.cookie.get('email')).then(function() {
+      alert('Password reset email sent');
+    }).catch(function(error) {
+      alert('Error when sending password reset email.');
+    })
   }
 }

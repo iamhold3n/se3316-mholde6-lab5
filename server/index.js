@@ -407,7 +407,7 @@ router.put('/auth/review/:subject/:course', [
             }
             else {
                 const data = req.body;
-                const review = { course: c, hidden: false, review: data.review };
+                const review = { course: c, hidden: false, user: data.displayName, review: data.review, date: data.date };
                 db.get('reviews').push(review).write();
             }
         }).catch((error) => {

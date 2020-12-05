@@ -60,7 +60,7 @@
         <li *ngIf="userSchedules !== null">Schedule names:</li>
         <li *ngFor="let u of userSchedules">
             <span class="subject" dir="ltr" (click)="editUserSchedule(u.name)">{{u.name}}</span>
-            <span class="course" dir="ltr">{{u.number}}</span>
+            <span class="course" dir="ltr"> </span>
         </li>
         <li *ngIf="editSchedule !== null">
             <input class="left" id="saveName" placeholder="Enter name for schedule" value="{{editSchedule.name}}" maxlength="20"><span (click)="saveSchedule()" class="savedButtons right">SAVE</span>

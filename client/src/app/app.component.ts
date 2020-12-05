@@ -13,4 +13,8 @@ export class AppComponent {
   logout() {
     this.auth.logout();
   }
+
+  resetPassword() {
+    this.auth.resetPassword();
+  }
 }

@@ -34,10 +34,6 @@ export class BuilderComponent implements OnInit {
     buildSel.className = "selected";
     savedSel.className = "";
 
-    //this.auth.getUser();
-    //console.log(this.auth.token);
-    //console.log(this.auth.displayName);
-
     this.populateSubjects();
   }
 
@@ -150,8 +146,8 @@ export class BuilderComponent implements OnInit {
       }
       else {
         this.savedCourses.name = name;
-        this.savedCourses.user = this.auth.uuid;
-        this.savedCourses.displayName = this.auth.displayName;
+        this.savedCourses.user = this.auth.cookie.get('uid');
+        this.savedCourses.displayName = this.auth.cookie.get('displayName');
         console.log(this.savedCourses.displayName);
         this.savedCourses.date = Date.now();
         this.savedCourses.private = (<HTMLInputElement>document.getElementById('checkPrivate')).checked;
@@ -207,7 +203,7 @@ export class BuilderComponent implements OnInit {
   }
 
   addReview(subj, cour): void {
-    let review = { review: prompt("Please enter your review: ") };
+    let review = { date: Date.now(), displayName: this.auth.cookie.get('displayName'), review: prompt("Please enter your review: ") };
 
     if (review === null || review.review === "") {
       alert("Review submission cancelled.");

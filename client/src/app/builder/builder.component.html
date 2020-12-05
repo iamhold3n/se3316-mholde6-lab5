@@ -81,6 +81,8 @@
 </div>
 <div class="popup" *ngIf="courseReviews">
     <ul>
-        <li *ngFor="let r of courseReviews">{{r.review}}</li>
+        <li *ngFor="let r of courseReviews">
+            {{r.user}} - {{r.review}} at {{r.date | date:'medium'}}
+        </li>
     </ul>
 </div>

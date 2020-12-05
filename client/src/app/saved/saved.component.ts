@@ -166,14 +166,17 @@ export class SavedComponent implements OnInit {
   }
 
   deleteSchedule(): void {
-    this.saved.deleteUserSpecific(this.delSchedule, this.auth.cookie.get('token')).subscribe(
-      (response) => {
-        alert('Schedule successfully deleted.');
-      }, (error) => {
-        alert('Scheduled failed to be deleted.');
-      }
-    )
-    this.getUserSchedules();
+    if (confirm('Are you sure you want to delete?')) {
+      this.saved.deleteUserSpecific(this.delSchedule, this.auth.cookie.get('token')).subscribe(
+        (response) => {
+          alert('Schedule successfully deleted.');
+        }, (error) => {
+          alert('Scheduled failed to be deleted.');
+        }
+      )
+      this.getUserSchedules();
+    } else alert('Schedule not deleted.');
+    
   }
 
   // get subject and course codes for specific schedule, test for user input, print timetable

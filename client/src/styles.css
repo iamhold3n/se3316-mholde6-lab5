@@ -11,6 +11,7 @@ body {
 }
 #topright span {
     color: white;
+    margin-left: 10px;
     padding: 5px;
     font-size: 16px;
     background-color: #634396;
@@ -285,7 +286,7 @@ ul li {
     margin-top: 10px;
     margin-bottom: 10px;
 }
-#searchKeyword input, #searchCourse input, #builder input, #saved input {
+#searchKeyword input, #searchCourse input, #builder input, #saved input, #login input {
     font-size: 20px;
     padding: 5px;
     border: 5px solid transparent;
@@ -294,6 +295,9 @@ ul li {
     margin: 0px;
     height: 24px;
     line-height: 24px;
+}
+#login div {
+    padding: 10px;
 }
 .left {
     border-top-left-radius: 5px;
@@ -334,4 +338,17 @@ ul li {
     bottom: 0;
     right: 15px;
     z-index: 9;
+}
+.review {
+    margin: 10px;
+    background-color: #634396;
+    border: 5px solid transparent;
+    border-radius: 5px;
+    color: white;
+    padding: 5px;
+    text-align: center;
+    text-decoration: none;
+    display: inline-block;
+    font-size: 20px;
+    font-weight: 600;
 }

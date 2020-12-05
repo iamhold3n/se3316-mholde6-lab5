@@ -1,6 +1,7 @@
 <div id="schedule">
   <img routerLink="/" [src]="'assets/img/schedule.png'" alt="scuffed">
   <div id="topright">
+    <span *ngIf="auth.user | async as user" (click)="resetPassword()">RESET PASSWORD</span>
     <span *ngIf="auth.user | async as user" (click)="logout()">LOGOUT</span>
   </div>
 
@@ -11,6 +12,7 @@
     <hr>
   </div>
   <router-outlet></router-outlet>
+  <hr>
   <div id="honesty">
     <span>DMCA Policy</span> | 
     <span>Security and Privacy Policy</span> | 
