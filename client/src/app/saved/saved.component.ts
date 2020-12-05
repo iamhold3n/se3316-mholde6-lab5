@@ -85,6 +85,15 @@ export class SavedComponent implements OnInit {
         (response) => {
           this.editSchedule = response[0];
           this.delSchedule = this.editSchedule.name;
+          this.courseList = this.editSchedule.courses;
+          this.courseList.forEach(e => {
+            this.builder.getSearchTimetable(e.subject, e.courseCode, "").subscribe(
+              (response) => {
+                this.specificSchedule.name = this.editSchedule.name;
+                this.specificSchedule.courses.push(response);
+              }
+            )
+          })
         }
       );
     } else {
@@ -162,6 +171,10 @@ export class SavedComponent implements OnInit {
     const l = this.editSchedule.courses.findIndex(x => (x.subject === subj && x.courseCode === cour));
     if (l > -1) {
       this.editSchedule.courses.splice(l, 1)
+    }
+    const s = this.specificSchedule.courses.findIndex(x => (x.subject === subj && x.courseCode === cour));
+    if (l > -1) {
+      this.specificSchedule.courses.splice(l, 1)
     }
   }
 

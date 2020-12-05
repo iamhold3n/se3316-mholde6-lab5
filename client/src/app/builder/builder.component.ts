@@ -225,6 +225,10 @@ export class BuilderComponent implements OnInit {
     this.builder.getReview(subj, cour).subscribe(
       (response) => {
         this.courseReviews = response;
+        if (this.courseReviews.length === 0) {
+          this.courseReviews = null;
+          alert('No reviews exist for this course yet.');
+        }
       }, (error) => {
         alert(error);
       }

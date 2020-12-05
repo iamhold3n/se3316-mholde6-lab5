@@ -3,10 +3,20 @@
     <span (click)="getUserSchedules()" class="savedButtons right delete">USER LISTS</span><br><br>
     <ul id="savedschedules">
         <li><hr></li>
+        <li *ngIf="editSchedule !== null">
+            <input class="left" id="saveName" placeholder="Enter name for schedule" value="{{editSchedule.name}}" maxlength="20"><span (click)="saveSchedule()" class="savedButtons right">SAVE</span>
+            <input class="left right" id="saveDesc" placeholder="Enter a description for your schedule"  value="{{editSchedule.description}}" maxlength="30">
+            <label class="checkcontainer">PRIVATE
+                <input *ngIf="editSchedule.private, else public" id="checkPrivate" type="checkbox" checked="checked">
+                <ng-template #public><input id="checkPrivate" type="checkbox"></ng-template>
+                <span class="checkmark"></span>
+            </label>
+        </li>
         <li *ngIf="specificSchedule.name !== ''">Timetable for schedule: <b>{{specificSchedule.name}}</b></li>
         <li *ngFor="let d of specificSchedule.courses">
             <span class="subject">{{d[0].subject}}</span>
             <span class="course">{{d[0].courseCode}}</span>
+            <span *ngIf="editSchedule !== null" class="remove" (click)="removeCourse(d[0].subject, d[0].courseCode)">X</span>
             <span class="description">{{d[0].description}}</span>
             <div class="ext_description">{{d[0].ext_description}}</div>
             <table class="courseinfotable">
@@ -43,7 +53,7 @@
         <li *ngFor="let a of allSchedules; index as i">
             <span class="subject" dir="ltr" (click)="showCourses(i)">{{a.name}}</span>
             <span class="course" dir="ltr">{{a.number}}</span>
-            <span>Last modified on: {{a.date | date:'medium'}}, </span>
+            <span> Last modified on: {{a.date | date:'medium'}}, </span>
             <span>by: {{a.displayName}}</span>
             <div class="sched" *ngIf="show[i]">
                 <span>{{a.description}}</span>
@@ -58,24 +68,6 @@
         <li *ngFor="let u of userSchedules">
             <span class="subject" dir="ltr" (click)="editUserSchedule(u.name)">{{u.name}}</span>
             <span class="course" dir="ltr"> </span>
-        </li>
-        <li *ngIf="editSchedule !== null">
-            <input class="left" id="saveName" placeholder="Enter name for schedule" value="{{editSchedule.name}}" maxlength="20"><span (click)="saveSchedule()" class="savedButtons right">SAVE</span>
-            <input class="left right" id="saveDesc" placeholder="Enter a description for your schedule"  value="{{editSchedule.description}}" maxlength="30">
-            <label class="checkcontainer">PRIVATE
-                <input *ngIf="editSchedule.private, else public" id="checkPrivate" type="checkbox" checked="checked">
-                <ng-template #public><input id="checkPrivate" type="checkbox"></ng-template>
-                <span class="checkmark"></span>
-            </label>
-            <ul id="builderData">
-                <li>Courses</li>
-                <li *ngFor="let a of editSchedule.courses">
-                    <span class="subject">{{a.subject}}</span>
-                    <span class="course">{{a.courseCode}}</span>
-                    <span class="remove" (click)="removeCourse(a.subject, a.courseCode)">X</span>
-                </li>
-            </ul>
-            <span (click)="deleteSchedule()" class="savedButtons left right">DELETE</span>
         </li>
     </ul>
 </div>
