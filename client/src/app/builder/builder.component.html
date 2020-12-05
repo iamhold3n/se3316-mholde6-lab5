@@ -80,9 +80,10 @@
     </ul>
 </div>
 <div class="popup" *ngIf="courseReviews">
-    <ul>
-        <li *ngFor="let r of courseReviews">
-            {{r.user}} - {{r.review}} at {{r.date | date:'medium'}}
-        </li>
-    </ul>
+    <table>
+        <tr *ngFor="let r of courseReviews">
+            <span class="button">{{r.user}}</span><br>{{r.review}}<br>at {{r.date | date:'medium'}}
+        </tr>
+    </table>
+    <span class="add" style="float:right" (click)="closeReviews()">X</span>
 </div>

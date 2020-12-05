@@ -231,4 +231,8 @@ export class BuilderComponent implements OnInit {
     )
   }
 
+  closeReviews(): void {
+    this.courseReviews = null;
+  }
+
 }

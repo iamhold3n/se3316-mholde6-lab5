@@ -325,19 +325,25 @@ ul li {
     padding: 2px;
 }
 .popup {
-    width: 400px;
     position: fixed;
     bottom: 0;
     right: 15px;
     z-index: 9;
+    background-color: white;
+    border: 5px solid rgb(170, 170, 170);
+    border-radius: 5px;
+}
+.popup table {
+    padding: 20px;
 }
 .popupNamed {
     display: none;
-    width: 400px;
+    width: 600px;
     position: fixed;
     bottom: 0;
     right: 15px;
     z-index: 9;
+    background-color: white;
 }
 .review {
     margin: 10px;
