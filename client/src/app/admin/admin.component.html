@@ -1,19 +1,42 @@
 <div id="admin">
     <span (click)="getUsers()" class="savedButtons left return">USERS</span>
-    <span (click)="getReviews()" class="savedButtons right delete">REVIEWS</span>
-    <ul *ngIf="users!==null" id="users">
-        <li *ngFor="let u of users.users">
-            <span>{{u.displayName}}</span>
-            <span (click)="toggleDisable(u.uid, u.disabled)">{{u.disabled}}</span>
-            <span *ngIf="u.customClaims; else notAdmin" (click)="toggleAdmin(u.uid, true)">{{u.customClaims.admin}}</span>
-            <ng-template #notAdmin><span (click)="toggleAdmin(u.uid, false)">false</span></ng-template>
-        </li>
-    </ul>
-    <ul *ngIf="reviews!==null" id="reviews">
+    <span (click)="getReviews()" class="savedButtons right delete">REVIEWS</span><br><br>
+    <table *ngIf="users!==null" id="users" class="courseinfotable">
+        <tr>
+            <td class="courseinfo">USER</td>
+            <td class="courseinfo">ADMIN</td>
+            <td class="courseinfo">INACTIVE</td>
+        </tr>
+        <tr *ngFor="let u of users.users">
+            <td class="courseinfovalue">{{u.displayName}}</td>
+            <td class="courseinfovalue add" *ngIf="u.customClaims.admin; else notAdmin" (click)="toggleAdmin(u.uid, true)">✔</td>
+            <ng-template #notAdmin><td class="courseinfovalue add" (click)="toggleAdmin(u.uid, false)">X</td></ng-template>
+            <td *ngIf="!u.disabled" class="courseinfovalue add" (click)="toggleDisable(u.uid, u.disabled)">X</td>
+            <td *ngIf="u.disabled" class="courseinfovalue add" (click)="toggleDisable(u.uid, u.disabled)">✔</td>
+        </tr>
+    </table>
+    <table *ngIf="reviews!==null" id="reviews" class="courseinfotable">
+        <tr>
+            <td class="courseinfo">COURSE</td>
+            <td class="courseinfo">USER</td>
+            <td class="courseinfo">DATE</td>
+            <td class="courseinfo">REVIEW</td>
+            <td class="courseinfo">HIDDEN</td>
+        </tr>
+        <tr *ngFor="let r of reviews">
+            <td class="courseinfovalue">{{r.course}}</td>
+            <td class="courseinfovalue">{{r.user}}</td>
+            <td class="courseinfovalue">{{r.date | date:'medium'}}</td>
+            <td class="courseinfovalue">{{r.review}}</td>
+            <td *ngIf="!r.hidden" class="courseinfovalue add" (click)="toggleHidden(r.course, r.review, r.hidden)">X</td>
+            <td *ngIf="r.hidden" class="courseinfovalue add" (click)="toggleHidden(r.course, r.review, r.hidden)">✔</td>
+        </tr>
+    </table>
+    <!--<ul *ngIf="reviews!==null" id="reviews">
         <li *ngFor="let r of reviews">
             <span>{{r.course}}</span>
             <span>{{r.review}}</span>
             <span (click)="toggleHidden(r.course, r.review, r.hidden)">{{r.hidden}}</span>
         </li>
-    </ul>
+    </ul>-->
 </div>

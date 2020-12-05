@@ -1,9 +1,6 @@
 <div id="saved">
     <span (click)="getAllSchedules()" class="savedButtons left return">PUBLIC LISTS</span>
-    <span (click)="getUserSchedules()" class="savedButtons right delete">USER LISTS</span>
-    <span (click)="getSpecificSchedule()" class="savedButtons left return">SEARCH</span>
-    <input id="schedInput" maxlength="20" placeholder="Schedule name">
-    <span (click)="deleteSpecificSchedule()" class="savedButtons right delete">DELETE</span>
+    <span (click)="getUserSchedules()" class="savedButtons right delete">USER LISTS</span><br><br>
     <ul id="savedschedules">
         <li><hr></li>
         <li *ngIf="specificSchedule.name !== ''">Timetable for schedule: <b>{{specificSchedule.name}}</b></li>
@@ -48,13 +45,13 @@
             <span class="course" dir="ltr">{{a.number}}</span>
             <span>Last modified on: {{a.date | date:'medium'}}, </span>
             <span>by: {{a.displayName}}</span>
-            <div *ngIf="show[i]">
-                <span (click)="getTimetable(a.name)">View Full Timetable</span>
+            <div class="sched" *ngIf="show[i]">
                 <span>{{a.description}}</span>
                 <div *ngFor="let c of a.courses">
                     <span class="subject">{{c.subject}}</span>
                     <span class="course">{{c.courseCode}}</span>
                 </div>
+                <span (click)="getTimetable(a.name)">View Full Timetable</span>
             </div>
         </li>
         <li *ngIf="userSchedules !== null">Schedule names:</li>

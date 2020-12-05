@@ -352,3 +352,13 @@ ul li {
     font-size: 20px;
     font-weight: 600;
 }
+.sched {
+    margin: 10px;
+    padding: 10px;
+}
+.sched div {
+    padding: 15px;
+}
+#reviews {
+    width: 600px;
+}

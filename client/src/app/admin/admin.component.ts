@@ -74,7 +74,7 @@ export class AdminComponent implements OnInit {
     const disable = { uid: uid, disabled: !toggle };
     this.saved.toggleDisable(disable, this.auth.cookie.get('token')).subscribe(
       (response) => {
-        alert("Successfully toggled admin status of account.");
+        alert("Successfully toggled status of account.");
         this.getUsers();
       }
     );

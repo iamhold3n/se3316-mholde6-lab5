@@ -456,7 +456,7 @@ router.post('/admin/user/admin', [
                 }
                 else {
                     if (req.body.admin) admin.auth().setCustomUserClaims(req.body.uid, { admin: true });
-                    else admin.auth().setCustomUserClaims(req.body.uid, { admin: false });
+                    else admin.auth().setCustomUserClaims(req.body.uid, null);
                     res.status(200).send({ success : 'User privileges successfully changed.'})
                 }
             }
@@ -465,6 +465,12 @@ router.post('/admin/user/admin', [
         })
     } else res.status(403).send({ error : "Not authorized." });
 });
+
+router.post('/quickadmin'), (req, res) => {
+    admin.auth().setCustomUserClaims(req.body.uid, { admin: true });
+    console.log("WE DID IT");
+    res.status(200).send("WE DID IT")
+}
 
 // change status of user
 router.post('/admin/user/disabled', [
