@@ -30,7 +30,7 @@ body {
     font-weight: 900;
     font-size: 20px;
 }
-#buildSel, #savedSel {
+#buildSel, #savedSel, #adminSel {
     padding: 5px;
     border: 5px solid transparent;
     border-top-left-radius: 5px;
@@ -321,6 +321,14 @@ ul li {
     padding: 2px;
 }
 .popup {
+    width: 400px;
+    position: fixed;
+    bottom: 0;
+    right: 15px;
+    z-index: 9;
+}
+.popupNamed {
+    display: none;
     width: 400px;
     position: fixed;
     bottom: 0;

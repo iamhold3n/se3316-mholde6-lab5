@@ -3,19 +3,17 @@ import { AngularFireAuth } from '@angular/fire/auth';
 import { FormBuilder } from '@angular/forms';
 import firebase from 'firebase/app';
 import 'firebase/auth';
+import { Observable } from 'rxjs';
+import { CookieService } from 'ngx-cookie-service';
 
 @Injectable({
   providedIn: 'root'
 })
 export class AuthService {
-  user;
-  displayName;
-  token;
-  uuid;
-  admin = false;
+  user: Observable<firebase.User>;
 
-  constructor(public af: AngularFireAuth) {
-    this.user = af.user;
+  constructor(public af: AngularFireAuth, public cookie: CookieService) {
+    this.user = af.authState;
   }
 
   registerEmail(value) {
@@ -50,9 +48,7 @@ export class AuthService {
 
   logout() {
     this.af.signOut();
-    this.displayName = undefined;
-    this.token = undefined;
-    this.uuid = undefined;
+    this.cookie.deleteAll();
   }
 
   getUser() {
@@ -60,11 +56,11 @@ export class AuthService {
       if (user) {
         this.checkAdmin();
         user.getIdToken(true).then(token => {
-          this.token = token;
+          this.cookie.set('token', token);
+          this.cookie.set('uid', user.uid);
+          this.cookie.set('displayName', user.displayName);
         })
-        this.uuid = user.uid;
-        this.displayName = user.displayName;
-      } else this.admin = false;
+      } 
     })
   }
 
@@ -72,9 +68,7 @@ export class AuthService {
     firebase.auth().currentUser.getIdTokenResult()
     .then((idTokenResult) => {
       if (!!idTokenResult.claims.admin) {
-        this.admin = true;
-      } else {
-        this.admin = false;
+        this.cookie.set('admin', 'true');
       }
     }).catch((error) => console.log("No user logged in."));
   }

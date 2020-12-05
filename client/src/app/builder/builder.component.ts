@@ -27,12 +27,16 @@ export class BuilderComponent implements OnInit {
   ngOnInit(): void {
     const buildSel = document.getElementById('buildSel');
     const savedSel = document.getElementById('savedSel');
+    if (document.getElementById('adminSel') !== null) {
+      const adminSel = document.getElementById('adminSel');
+      adminSel.className = "";
+    }
     buildSel.className = "selected";
     savedSel.className = "";
 
-    this.auth.getUser();
-    console.log(this.auth.token);
-    console.log(this.auth.displayName);
+    //this.auth.getUser();
+    //console.log(this.auth.token);
+    //console.log(this.auth.displayName);
 
     this.populateSubjects();
   }
@@ -153,7 +157,7 @@ export class BuilderComponent implements OnInit {
         this.savedCourses.private = (<HTMLInputElement>document.getElementById('checkPrivate')).checked;
         this.savedCourses.description = (<HTMLInputElement>document.getElementById('saveDesc')).value;
 
-        this.saved.checkUnique(name, this.auth.token).subscribe(
+        this.saved.checkUnique(name, this.auth.cookie.get('token')).subscribe(
           (response) => { 
             this.unique = response;
             if (this.unique.update) { // schedule name does exist, update it
@@ -171,7 +175,7 @@ export class BuilderComponent implements OnInit {
 
   // create new schedule with builder schedule
   createSchedule(): void {
-    this.builder.createSchedule(this.savedCourses, this.auth.token).subscribe(
+    this.builder.createSchedule(this.savedCourses, this.auth.cookie.get('token')).subscribe(
       (response) => {
         alert("Schedule successfully created.");
       }, (error) => {
@@ -182,7 +186,7 @@ export class BuilderComponent implements OnInit {
 
   // overwrite existing schedule with builder schedule
   updateSchedule(): void {
-    this.builder.updateSchedule(this.savedCourses, this.auth.token).subscribe(
+    this.builder.updateSchedule(this.savedCourses, this.auth.cookie.get('token')).subscribe(
       (response) => {
         alert("Schedule successuflly updated.");
       }, (error) => {
@@ -210,7 +214,7 @@ export class BuilderComponent implements OnInit {
     } else {
       if (this.badcharspaces.test(review.review)) alert("Disallowed characters are detected.");
       else {
-        this.builder.postReview(subj, cour, review, this.auth.token).subscribe(
+        this.builder.postReview(subj, cour, review, this.auth.cookie.get('token')).subscribe(
           (response) => {
             alert("Review submitted.");
           }, (error) => {

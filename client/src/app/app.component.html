@@ -7,8 +7,16 @@
   <div id="mode">
     <span id="buildSel" routerLink="/builder">SEARCH & BUILD</span>
     <span id="savedSel" routerLink="/saved">ACCESS SAVED DRAFTS</span>
-    <span *ngIf="auth.admin" id="adminSel" routerLink="/admin">ADMIN PANEL</span>
+    <span *ngIf="auth.cookie.get('admin')" id="adminSel" routerLink="/admin">ADMIN PANEL</span>
     <hr>
   </div>
   <router-outlet></router-outlet>
+  <div id="honesty">
+    <span>DMCA Policy</span> | 
+    <span>Security and Privacy Policy</span> | 
+    <span>Acceptable Use Policy</span>
+  </div>
 </div>
+<div id="DMCA" class="popupNamed">DMCA BLURB</div>
+<div id="SPP" class="popupNamed">SPP</div>
+<div id="AUP" class="popupNamed">AUP BLURB</div>

@@ -26,8 +26,14 @@ export class SavedComponent implements OnInit {
   ngOnInit(): void {
     const buildSel = document.getElementById('buildSel');
     const savedSel = document.getElementById('savedSel');
+    if (document.getElementById('adminSel') !== null) {
+      const adminSel = document.getElementById('adminSel');
+      adminSel.className = "";
+    }
     buildSel.className = "";
     savedSel.className = "selected";
+
+    this.auth.getUser();
   }
 
   // reset UI elements
@@ -60,7 +66,7 @@ export class SavedComponent implements OnInit {
     this.resetUI();
 
     if (firebase.auth().currentUser) {
-      this.saved.getUserSchedules(this.auth.token).subscribe(
+      this.saved.getUserSchedules(this.auth.cookie.get('token')).subscribe(
         (response) => {
           this.userSchedules = response;
         }
@@ -75,7 +81,7 @@ export class SavedComponent implements OnInit {
     this.resetUI();
 
     if (firebase.auth().currentUser) {
-      this.saved.getUserSpecific(sch, this.auth.token).subscribe(
+      this.saved.getUserSpecific(sch, this.auth.cookie.get('token')).subscribe(
         (response) => {
           this.editSchedule = response[0];
           this.delSchedule = this.editSchedule.name;
@@ -96,8 +102,8 @@ export class SavedComponent implements OnInit {
         alert("Disallowed characters are detected, please try again with a new schedule name/description.");
       }
       else {
-        this.editSchedule.user = this.auth.uuid;
-        this.editSchedule.displayName = this.auth.displayName;
+        this.editSchedule.user = this.auth.cookie.get('uid');
+        this.editSchedule.displayName = this.auth.cookie.get('displayName');
         console.log(this.editSchedule.displayName);
         this.editSchedule.date = Date.now();
         this.editSchedule.private = (<HTMLInputElement>document.getElementById('checkPrivate')).checked;
@@ -116,7 +122,7 @@ export class SavedComponent implements OnInit {
 
   // update schedule with new attributes
   updateSchedule(): void {
-    this.builder.updateSchedule(this.editSchedule, this.auth.token).subscribe(
+    this.builder.updateSchedule(this.editSchedule, this.auth.cookie.get('token')).subscribe(
       (response) => {
         alert("Schedule updated.");
       }
@@ -125,22 +131,22 @@ export class SavedComponent implements OnInit {
 
   // schedule name changed, check to make sure it's unique and update
   updateScheduleName(): void {
-    this.saved.checkUnique(this.editSchedule.name, this.auth.token).subscribe(
+    this.saved.checkUnique(this.editSchedule.name, this.auth.cookie.get('token')).subscribe(
       (response) => {
         this.unique = response;
         if (this.unique.new) {
-          this.builder.createSchedule(this.editSchedule, this.auth.token).subscribe(
+          this.builder.createSchedule(this.editSchedule, this.auth.cookie.get('token')).subscribe(
             (response) => {
               alert('Schedule successfully renamed.');
-              this.saved.deleteUserSpecific(this.delSchedule, this.auth.token).subscribe((response) => console.log('Old schedule successfully deleted.'));
+              this.saved.deleteUserSpecific(this.delSchedule, this.auth.cookie.get('token')).subscribe((response) => console.log('Old schedule successfully deleted.'));
             }
           )
         } else {
           if (confirm("Schedule name already exists, overwrite?")) {
-            this.builder.updateSchedule(this.editSchedule, this.auth.token).subscribe(
+            this.builder.updateSchedule(this.editSchedule, this.auth.cookie.get('token')).subscribe(
               (response) => {
                 alert('Schedule successfully renamed, and overwrote other schedule.');
-                this.saved.deleteUserSpecific(this.delSchedule, this.auth.token).subscribe((response) => console.log('Old schedule successfully deleted.'));
+                this.saved.deleteUserSpecific(this.delSchedule, this.auth.cookie.get('token')).subscribe((response) => console.log('Old schedule successfully deleted.'));
               }
             )
           } else alert("Schedule not updated.");
@@ -160,7 +166,7 @@ export class SavedComponent implements OnInit {
   }
 
   deleteSchedule(): void {
-    this.saved.deleteUserSpecific(this.delSchedule, this.auth.token).subscribe(
+    this.saved.deleteUserSpecific(this.delSchedule, this.auth.cookie.get('token')).subscribe(
       (response) => {
         alert('Schedule successfully deleted.');
       }, (error) => {
